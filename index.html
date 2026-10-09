@@ -226,6 +226,18 @@ button {
   pointer-events: none;
 }
 
+@keyframes spinPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    filter: drop-shadow(0 0 5px #ffdf22);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+    filter: drop-shadow(0 0 17px #ffdf22) drop-shadow(0 0 26px #ffbb00);
+  }
+}
+
 #spinBtn:disabled {
   animation: none;
   cursor: default;
@@ -352,7 +364,6 @@ button {
   opacity: 0;
   pointer-events: none;
   transition: opacity .4s, transform .4s;
-  filter: drop-shadow(0 0 12px #ffdf22);
   cursor: pointer;
   animation: rewardPulse 1.6s ease-in-out infinite;
 }
@@ -366,12 +377,10 @@ button {
 
 @keyframes rewardPulse {
   0%, 100% {
-    filter: drop-shadow(0 0 8px #ffdf22) drop-shadow(0 0 12px rgba(255, 223, 34, .75));
     transform: translate(-50%, -15px) scale(.75);
   }
 
   50% {
-    filter: drop-shadow(0 0 16px #ffdf22) drop-shadow(0 0 24px rgba(255, 223, 34, 1));
     transform: translate(-50%, -15px) scale(.82);
   }
 }
@@ -857,13 +866,13 @@ button {
     const generation = ++fadeGeneration;
     const startVolume = spinAudio.volume;
     const startAt = performance.now();
-    const duration = CONFIG.fadeDuration;
+    const duration = Math.max(180, CONFIG.fadeDuration * 0.35);
 
     function tick(now) {
       if (generation !== fadeGeneration) return;
 
       const t = Math.min(1, (now - startAt) / duration);
-      const ease = 1 - Math.pow(1 - t, 3);
+      const ease = 1 - Math.pow(1 - t, 3.2);
 
       spinAudio.volume = Math.max(
         0,
@@ -884,6 +893,8 @@ button {
   /* WHEEL ANIMATION */
 
   function cancelWheelAnimation() {
+    const wasAnimating = wheelAnimationMode !== 'idle';
+
     wheelAnimationGeneration++;
 
     if (wheelAnimationId) {
@@ -892,6 +903,10 @@ button {
 
     wheelAnimationId = 0;
     wheelAnimationMode = 'idle';
+
+    if (wasAnimating) {
+      fadeOutSpinAudio();
+    }
   }
 
   function applyWheelRotation() {
@@ -963,6 +978,7 @@ button {
 
       wheelAnimationId = 0;
       wheelAnimationMode = 'idle';
+      fadeOutSpinAudio();
 
       if (typeof done === 'function') {
         done();
@@ -1117,7 +1133,6 @@ button {
 
     spinBtn.disabled = true;
 
-    // Restart the spin sound for each spin.
     safePlay(spinAudio, true);
 
     if (spinCount === 1) {
@@ -1197,8 +1212,19 @@ button {
     window.location.assign(CONFIG.ctaUrl);
   }
 
+  function handleFinalTap(event) {
+    if (!isFinalScene()) return;
+
+    if (event.target && event.target.closest('button')) {
+      return;
+    }
+
+    openSite();
+  }
+
   reveal.addEventListener('click', openSite);
   $('reward').addEventListener('click', openSite);
+  game.addEventListener('click', handleFinalTap);
 
   /* ASSET DIAGNOSTICS */
 
