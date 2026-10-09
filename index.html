@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#100b00">
+<title>Mystery Wheel Playable</title>
+
+<style>
+:root {
+  --gold: #ffdf22;
+  --glow: 0 0 10px #ffdf22, 0 0 26px #ffca00, 0 0 46px #ffb90066;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #050400;
+  touch-action: manipulation;
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+#game {
+  position: relative;
+  width: min(100vw, 56.25vh);
+  height: min(177.7778vw, 100dvh);
+  max-width: 100vw;
+  max-height: 100dvh;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  background: #090700;
+  isolation: isolate;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+#bgImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -3;
+}
+
+#ambient {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 46%, transparent 35%, #0005 100%);
+}
+
+.asset {
+  position: absolute;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* HEADLINES */
+
+#headline {
+  position: absolute;
+  top: 7.7%;
+  left: 3%;
+  width: 94%;
+  height: 15.5%;
+  z-index: 4;
+  transition: opacity .4s, transform .4s;
+}
+
+#title1 {
+  left: 11%;
+  top: 2%;
+  width: 78%;
+  height: 22%;
+}
+
+#title2 {
+  left: 10%;
+  top: 29%;
+  width: 80%;
+  height: 43%;
+  filter: drop-shadow(0 0 8px #ffdf22);
+}
+
+#title3 {
+  left: 12%;
+  top: 79%;
+  width: 40%;
+  height: 11%;
+}
+
+/* TOP ICONS */
+
+#topIcons {
+  position: absolute;
+  z-index: 5;
+  top: 21.1%;
+  right: 3%;
+  width: 42%;
+  height: 11.3%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4%;
+  transition: opacity .35s, transform .35s;
+}
+
+.top-icon {
+  width: 48%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 7px #ffdf22);
+  pointer-events: none;
+}
+
+/* WHEEL */
+
+#wheelWrap {
+  position: absolute;
+  left: 3.3%;
+  top: 33%;
+  width: 71%;
+  aspect-ratio: 1;
+  z-index: 3;
+  transition: transform .8s, left .8s, top .8s, width .8s, filter .4s;
+}
+
+#wheelGlow {
+  position: absolute;
+  inset: -1%;
+  border-radius: 50%;
+  border: 0;
+  box-shadow: 0 0 18px #ffdf2244;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#wheelImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: rotate(0deg);
+  filter: drop-shadow(0 0 8px #ffdf22aa) drop-shadow(0 0 16px #ffca0066);
+  z-index: 1;
+  will-change: transform;
+}
+
+#pointer {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  top: -6%;
+  width: 10%;
+  height: 18%;
+  object-fit: contain;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 0 8px #ffdf22);
+  pointer-events: none;
+}
+
+#spinBtn {
+  position: absolute;
+  z-index: 8;
+  left: 50%;
+  top: 50%;
+  width: 22%;
+  height: 22%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  animation: spinPulse 1.2s ease-in-out infinite;
+  touch-action: manipulation;
+}
+
+#spinBtn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+#spinBtn:disabled {
+  animation: none;
+  cursor: default;
+  opacity: 1;
+  appearance: none;
+}
+
+@keyframes spinPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px #ffdf22);
+  }
+  50% {
+    filter: drop-shadow(0 0 17px #ffdf22)
+            drop-shadow(0 0 26px #ffbb00);
+  }
+}
+
+/* CHARACTERS */
+
+#girlMystery {
+  z-index: 7;
+  right: 0%;
+  bottom: -1%;
+  width: 83%;
+  height: auto;
+  object-position: center bottom;
+  filter: drop-shadow(0 0 15px #ffdc22);
+  transition: opacity .35s, left .85s, right .85s,
+              bottom .85s, width .85s, height .85s, transform .85s;
+}
+
+#questionMark {
+  z-index: 9;
+  right: 7%;
+  bottom: 12%;
+  width: 19%;
+  height: 15%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 9px #ffdf22);
+  animation: questionFloat 1.8s ease-in-out infinite;
+  transition: opacity .3s;
+}
+
+@keyframes questionFloat {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+/* OVERLAY */
+
+#blurOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: #0806003d;
+  backdrop-filter: blur(0);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .45s, backdrop-filter .45s;
+}
+
+#characterReveal {
+  z-index: 13;
+  left: 50%;
+  top: 60%;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  transform: translate(-50%, -50%) scale(.94);
+  opacity: 0;
+  filter: drop-shadow(0 0 20px #ffdc22);
+  transition: opacity .4s, transform .65s, left .85s,
+              top .85s, width .85s, height .85s;
+}
+
+#speech {
+  position: absolute;
+  z-index: 15;
+  left: 15%;
+  top: 56%;
+  width: 55%;
+  height: auto;
+  object-fit: contain;
+  opacity: 0;
+  transform: translateY(15px) scale(.92);
+  transition: opacity .35s, transform .35s;
+  pointer-events: none;
+}
+
+/* REWARD AND CTA */
+
+#reward {
+  position: absolute;
+  z-index: 18;
+  left: 50%;
+  top: 4%;
+  width: 100%;
+  height: auto;
+  padding: 0;
+  transform: translate(-50%, -15px) scale(.75);
+  border: 0;
+  background: transparent;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s, transform .4s;
+  filter: drop-shadow(0 0 12px #ffdf22);
+  cursor: pointer;
+}
+
+#reward img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* SOUND */
+
+#soundBtn {
+  position: absolute;
+  z-index: 25;
+  top: 1.5%;
+  right: 2.5%;
+  width: 8%;
+  height: 4.5%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  filter: drop-shadow(0 0 5px #ffdf22);
+}
+
+#soundBtn span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-size: clamp(16px, 2vw, 28px);
+  line-height: 1;
+  color: #ffdf22;
+  text-shadow: 0 0 8px #ffdf22;
+}
+
+/* REVEAL SCENE */
+
+#game.scene-reveal #headline,
+#game.scene-reveal #topIcons {
+  opacity: 1;
+}
+
+#game.scene-reveal #wheelWrap {
+  filter: blur(2.5px);
+}
+
+#game.scene-reveal #girlMystery,
+#game.scene-reveal #questionMark {
+  opacity: 0;
+}
+
+#game.scene-reveal #blurOverlay,
+#game.scene-final #blurOverlay {
+  opacity: 1;
+  backdrop-filter: blur(2.5px);
+}
+
+#game.show-character #characterReveal {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+#game.show-speech #speech {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* SECOND SCENE */
+
+#game.scene-two #headline {
+  top: 5%;
+  height: 15%;
+}
+
+#game.scene-two #title1 {
+  display: none;
+}
+
+#game.scene-two #title2 {
+  top: 0;
+  left: 9%;
+  width: 82%;
+  height: auto;
+}
+
+#game.scene-two #title3 {
+  top: 55%;
+  left: 10%;
+  width: 78%;
+  height: auto;
+  filter: drop-shadow(0 0 8px #ffdf22);
+}
+
+#game.scene-two #topIcons {
+  opacity: 0;
+  transform: translateY(-16px);
+  pointer-events: none;
+}
+
+#game.scene-two #girlMystery,
+#game.scene-two #questionMark {
+  opacity: 0;
+}
+
+#game.scene-two #characterReveal {
+  left: 70%;
+  top: 84.5%;
+  width: 80%;
+  height: auto;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 7;
+}
+
+#game.scene-two #wheelWrap {
+  left: 50%;
+  top: 48%;
+  width: 88%;
+  transform: translate(-50%, -50%);
+  filter: none !important;
+  z-index: 14;
+}
+
+#game.scene-two #blurOverlay {
+  opacity: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* FINAL SCENE */
+
+#game.scene-final #headline,
+#game.scene-final #topIcons {
+  opacity: 0;
+}
+
+#game.scene-final #wheelWrap {
+  transform: scale(.94);
+}
+
+#game.scene-final #girlMystery {
+  opacity: 0;
+}
+
+#game.scene-final #characterReveal {
+  left: 50%;
+  top: 60%;
+  width: 100%;
+  height: auto;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+#game.scene-final #speech {
+  top: 58%;
+  left: 12%;
+  width: 60%;
+  height: auto;
+}
+
+#game.scene-final #reward {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+  pointer-events: auto;
+}
+
+#game.scene-final #spinBtn {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-height: 650px) {
+  #wheelWrap {
+    top: 30%;
+  }
+
+  #girlMystery {
+    height: 45%;
+  }
+
+  #speech {
+    top: 22%;
+  }
+
+  #game.scene-two #wheelWrap {
+    top: 48%;
+  }
+}
+</style>
+</head>
+
+<body>
+<main id="game" aria-label="Mystery Wheel playable ad">
+
+  <img id="bgImage" src="assets/background.png" alt="" draggable="false">
+
+  <div id="headline">
+    <img class="asset" id="title1" src="assets/title-1.png" alt="" draggable="false">
+    <img class="asset" id="title2" src="assets/title-2.png" alt="" draggable="false">
+    <img class="asset" id="title3" src="assets/title-3.png" alt="" draggable="false">
+  </div>
+
+  <div id="topIcons">
+    <img class="top-icon" id="icon1" src="assets/icon-1.png" alt="" draggable="false">
+    <img class="top-icon" id="icon2" src="assets/icon-2.png" alt="" draggable="false">
+  </div>
+
+  <section id="wheelWrap" aria-label="Prize wheel">
+    <div id="wheelGlow"></div>
+
+    <img id="wheelImage" src="assets/wheel-1.png" alt="" draggable="false">
+
+    <img class="asset" id="pointer" src="assets/pointer.png" alt="" draggable="false">
+
+    <button id="spinBtn" type="button" aria-label="Spin the wheel">
+      <img src="assets/spin.png" alt="" draggable="false">
+    </button>
+  </section>
+
+  <img class="asset" id="girlMystery" src="assets/girl-mystery.png" alt="" draggable="false">
+
+  <img class="asset" id="questionMark" src="assets/question.png" alt="" draggable="false">
+
+  <div id="blurOverlay"></div>
+
+  <img class="asset" id="characterReveal" src="assets/girl-reveal.png" alt="" draggable="false">
+
+  <img id="speech" src="assets/bubble-1.png" alt="" draggable="false">
+
+  <button id="reward" type="button" aria-label="Open reward website">
+    <img src="assets/reward.png" alt="" draggable="false">
+  </button>
+
+  <div id="ambient"></div>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const CONFIG = {
+    ctaUrl: 'https://honeytoon.com/comic/redheads-first-ride/1',
+
+    firstRevealDelay: 2100,
+    firstBubbleDelay: 700,
+    secondBubbleDelay: 3700,
+    sceneTwoDelayAfterBubble: 2600,
+
+    spinDurationFirst: 4600,
+    spinDurationSecond: 5000,
+
+    music: 'assets/music.mp3',
+    spinSound: 'assets/spin.mp3',
+    wowSound: 'assets/wow.mp3',
+
+    sceneTwoTitle2: 'assets/title-2-stage2.png',
+    sceneTwoTitle3: 'assets/title-3-stage2.png',
+
+    bubbleOne: 'assets/bubble-1.png',
+    bubbleTwo: 'assets/bubble-2.png',
+    finalBubble: 'assets/bubble-final.png',
+
+    wheelOne: 'assets/wheel-1.png',
+    wheelTwo: 'assets/wheel-2.png',
+
+    characterFirst: 'assets/girl-reveal.png',
+    characterFinal: 'assets/girl-final.png'
+  };
+
+  const $ = id => document.getElementById(id);
+
+  const game = $('game');
+  const wheel = $('wheelImage');
+  const spinBtn = $('spinBtn');
+  const girl = $('girlMystery');
+  const question = $('questionMark');
+  const reveal = $('characterReveal');
+  const speech = $('speech');
+
+  const START_ANGLE = 0;
+
+  let rotation = START_ANGLE;
+  let spinning = false;
+  let spinCount = 0;
+  let audioEnabled = true;
+  let audioStarted = false;
+
+  let music = null;
+  let spinAudio = null;
+  let wowAudio = null;
+
+  let continuousSpin = false;
+  let continuousFrame = 0;
+  let lastSpinFrame = 0;
+
+  /* AUDIO */
+
+  function makeAudio(src, loop, volume) {
+    const audio = new Audio(src);
+    audio.loop = !!loop;
+    audio.volume = volume;
+    audio.preload = 'auto';
+    return audio;
+  }
+
+  try {
+    music = makeAudio(CONFIG.music, true, .35);
+    spinAudio = makeAudio(CONFIG.spinSound, true, .8);
+    wowAudio = makeAudio(CONFIG.wowSound, false, 1);
+  } catch (e) {
+    // Audio is optional.
+  }
+
+  function playAudio(audio) {
+    if (!audioEnabled || !audio) return;
+
+    try {
+      audio.currentTime = 0;
+
+      const promise = audio.play();
+
+      if (promise && promise.catch) {
+        promise.catch(() => {});
+      }
+    } catch (e) {}
+  }
+
+  function startAudio() {
+    if (audioStarted) return;
+
+    audioStarted = true;
+
+    if (audioEnabled && music) {
+      const promise = music.play();
+
+      if (promise && promise.catch) {
+        promise.catch(() => {});
+      }
+    }
+  }
+
+  /* CONTINUOUS SPIN FOR FIRST SCENE */
+
+  function startContinuousSpin() {
+    stopContinuousSpin();
+
+    continuousSpin = true;
+    lastSpinFrame = 0;
+
+    function frame(now) {
+      if (!continuousSpin) return;
+
+      if (lastSpinFrame) {
+        rotation += Math.min(now - lastSpinFrame, 50) * .42;
+      }
+
+      lastSpinFrame = now;
+      wheel.style.transform = `rotate(${rotation}deg)`;
+
+      continuousFrame = requestAnimationFrame(frame);
+    }
+
+    continuousFrame = requestAnimationFrame(frame);
+  }
+
+  function stopContinuousSpin() {
+    continuousSpin = false;
+
+    if (continuousFrame) {
+      cancelAnimationFrame(continuousFrame);
+    }
+
+    continuousFrame = 0;
+    lastSpinFrame = 0;
+  }
+
+  /* SPIN AUDIO */
+
+  function stopSpinAudio() {
+    if (!spinAudio) return;
+
+    try {
+      spinAudio.pause();
+      spinAudio.currentTime = 0;
+      spinAudio.volume = .8;
+    } catch (e) {}
+  }
+
+  function fadeOutSpinAudio() {
+    if (!spinAudio || spinAudio.paused) return;
+
+    const startVolume = spinAudio.volume || .8;
+    const startAt = performance.now();
+    const duration = 600;
+
+    function tick(now) {
+      const t = Math.min(1, (now - startAt) / duration);
+      const ease = 1 - Math.pow(1 - t, 3);
+
+      if (spinAudio) {
+        spinAudio.volume = startVolume * (1 - ease);
+      }
+
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        stopSpinAudio();
+      }
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+function rotateWheel(target, duration, done) {
+  const start = rotation;
+  const startAt = performance.now();
+
+  const turns = Math.max(1, Math.round((target - start) / 360));
+  const delta = turns * 360;
+
+  function frame(now) {
+    const t = Math.min(1, (now - startAt) / duration);
+
+    // Плавне сповільнення до кінця обертання.
+    const ease = 1 - Math.pow(1 - t, 4);
+
+    rotation = start + delta * ease;
+    wheel.style.transform = `rotate(${rotation}deg)`;
+
+    if (t < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      // Завершуємо анімацію на точному кінцевому куті.
+      rotation = start + delta;
+      wheel.style.transform = `rotate(${rotation}deg)`;
+
+      if (done) done();
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+  function resetWheelToStart() {
+    rotation = START_ANGLE;
+    wheel.style.transform = `rotate(${rotation}deg)`;
+  }
+
+  function setWheel(src) {
+    wheel.src = src;
+  }
+
+  function setBubble(src) {
+    speech.src = src;
+  }
+
+  /* FIRST REVEAL */
+
+  function startFirstReveal() {
+    if (
+      spinCount !== 1 ||
+      game.classList.contains('scene-final')
+    ) {
+      return;
+    }
+
+    game.classList.add('scene-reveal');
+
+    girl.style.opacity = '0';
+    question.style.opacity = '0';
+
+    reveal.src = CONFIG.characterFirst;
+
+    setTimeout(() => {
+      if (game.classList.contains('scene-final')) return;
+
+      fadeOutSpinAudio();
+      game.classList.add('show-character');
+    }, 220);
+
+    setTimeout(() => {
+      if (game.classList.contains('scene-final')) return;
+
+      setBubble(CONFIG.bubbleOne);
+      game.classList.add('show-speech');
+    }, CONFIG.firstBubbleDelay);
+
+    setTimeout(() => {
+      if (game.classList.contains('scene-final')) return;
+
+      setBubble(CONFIG.bubbleTwo);
+    }, CONFIG.secondBubbleDelay);
+
+    const total =
+      CONFIG.firstBubbleDelay +
+      CONFIG.secondBubbleDelay +
+      CONFIG.sceneTwoDelayAfterBubble;
+
+    setTimeout(() => {
+      if (
+        spinCount !== 1 ||
+        game.classList.contains('scene-final')
+      ) {
+        return;
+      }
+
+      stopContinuousSpin();
+      stopSpinAudio();
+
+      spinning = false;
+
+      game.classList.remove(
+        'scene-reveal',
+        'show-character',
+        'show-speech'
+      );
+
+      game.classList.add('scene-two');
+
+      resetWheelToStart();
+
+      $('title2').src = CONFIG.sceneTwoTitle2;
+      $('title3').src = CONFIG.sceneTwoTitle3;
+
+      setWheel(CONFIG.wheelTwo);
+
+      reveal.style.opacity = '';
+      speech.style.opacity = '';
+      speech.style.transform = '';
+
+      girl.style.opacity = '0';
+      question.style.opacity = '0';
+
+      spinBtn.disabled = false;
+    }, total);
+  }
+
+  /* FINAL SCENE */
+
+  function showFinal() {
+    stopContinuousSpin();
+    stopSpinAudio();
+
+    game.classList.add('scene-final');
+
+    game.classList.remove(
+      'scene-two',
+      'scene-reveal',
+      'show-character',
+      'show-speech'
+    );
+
+    reveal.src = CONFIG.characterFinal;
+
+    reveal.style.opacity = '';
+    speech.style.opacity = '';
+    speech.style.transform = '';
+
+    setBubble(CONFIG.finalBubble);
+
+    game.classList.add('show-speech');
+
+    playAudio(wowAudio);
+  }
+
+  /* SPIN BUTTON */
+
+  function beginSpin() {
+    if (
+      spinning ||
+      spinBtn.disabled ||
+      spinCount >= 2 ||
+      game.classList.contains('scene-final')
+    ) {
+      return;
+    }
+
+    startAudio();
+
+    spinning = true;
+    spinCount++;
+
+    spinBtn.disabled = true;
+
+    playAudio(spinAudio);
+
+    if (spinCount === 1) {
+      startContinuousSpin();
+
+      setTimeout(startFirstReveal, CONFIG.firstRevealDelay);
+
+    } else {
+      const startAngle = rotation;
+      const extraTurns = 5 + Math.random() * 2;
+
+      // No random offset: final angle is exactly the starting angle.
+      const target = startAngle + 360 * Math.round(extraTurns);
+
+      rotateWheel(
+        target,
+        CONFIG.spinDurationSecond,
+        () => {
+          rotation = startAngle;
+          wheel.style.transform = `rotate(${startAngle}deg)`;
+
+          spinning = false;
+
+          fadeOutSpinAudio();
+
+          showFinal();
+        }
+      );
+    }
+  }
+
+  spinBtn.addEventListener('click', beginSpin);
+
+  /* SOUND BUTTON */
+
+  const soundBtn = $('soundBtn') || document.createElement('button');
+
+  soundBtn.id = 'soundBtn';
+  soundBtn.type = 'button';
+  soundBtn.setAttribute('aria-label', 'Toggle sound');
+
+  const soundGlyph = document.createElement('span');
+  soundGlyph.textContent = '🔊';
+
+  soundBtn.replaceChildren(soundGlyph);
+
+  if (!soundBtn.parentElement) {
+    game.appendChild(soundBtn);
+  }
+
+  soundBtn.addEventListener('click', () => {
+    audioEnabled = !audioEnabled;
+
+    soundGlyph.textContent = audioEnabled ? '🔊' : '🔇';
+
+    if (!audioEnabled) {
+      if (music) music.pause();
+      if (spinAudio) spinAudio.pause();
+      if (wowAudio) wowAudio.pause();
+    } else if (audioStarted && music) {
+      const promise = music.play();
+
+      if (promise && promise.catch) {
+        promise.catch(() => {});
+      }
+    }
+  });
+
+  /* CTA */
+
+  function openSite() {
+    if (!CONFIG.ctaUrl) return;
+
+    try {
+      window.open(CONFIG.ctaUrl, '_self');
+    } catch (e) {
+      window.location.href = CONFIG.ctaUrl;
+    }
+  }
+
+  $('reward').addEventListener('click', openSite);
+
+  /* ASSET FALLBACKS */
+
+  $('bgImage').addEventListener('error', () => {
+    $('bgImage').style.display = 'none';
+  });
+
+  document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('error', () => {
+      if (img.id !== 'bgImage') {
+        img.style.visibility = 'hidden';
+      }
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>
