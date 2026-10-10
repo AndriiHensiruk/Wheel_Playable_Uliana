@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,6 +73,12 @@ button {
   height: 100%;
   object-fit: cover;
   z-index: -3;
+  transform-origin: center center;
+  filter: saturate(1.05) contrast(1.04);
+  transition: transform .8s ease, filter .8s ease;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(255, 210, 72, 0.12), transparent 26%),
+    linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.24) 100%);
 }
 
 #ambient {
@@ -85,8 +90,56 @@ button {
     radial-gradient(
       ellipse at 50% 46%,
       transparent 35%,
-      #0005 100%
+      rgba(0,0,0,0.5) 100%
     );
+  box-shadow: inset 0 0 80px rgba(0,0,0,0.65), inset 0 0 120px rgba(0,0,0,0.8);
+  transition: transform .8s ease, opacity .8s ease;
+}
+
+#bgDust {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(255, 218, 112, 0.16) 0%, transparent 15%),
+    radial-gradient(circle at 80% 30%, rgba(255, 216, 99, 0.12) 0%, transparent 18%),
+    radial-gradient(circle at 50% 58%, rgba(255, 210, 75, 0.08) 0%, transparent 18%);
+}
+
+.bg-dust-particle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 245, 191, 0.98) 0%, rgba(255, 210, 80, 0.72) 30%, rgba(255, 180, 50, 0.18) 68%, transparent 100%);
+  box-shadow: 0 0 10px rgba(255, 214, 109, 0.45);
+  opacity: 0.6;
+  animation: dustFloat linear infinite;
+}
+
+@keyframes dustFloat {
+  0% {
+    transform: translate3d(-8px, 0, 0) scale(0.8);
+    opacity: 0.15;
+  }
+
+  25% {
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: translate3d(12px, -12px, 0) scale(1);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translate3d(-10px, 16px, 0) scale(0.92);
+    opacity: 0.15;
+  }
 }
 
 /* HEADLINES */
@@ -168,9 +221,97 @@ button {
   position: absolute;
   inset: -1%;
   border-radius: 50%;
-  box-shadow: 0 0 18px #ffdf2244;
+  box-shadow:
+    0 0 18px rgba(255, 223, 34, 0.3),
+    0 0 32px rgba(255, 190, 44, 0.24),
+    inset 0 0 22px rgba(255, 210, 98, 0.15);
   pointer-events: none;
   z-index: 0;
+}
+
+#wheelEffects {
+  position: absolute;
+  inset: -8%;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  transform: rotate(0deg);
+  will-change: transform;
+}
+
+#wheelRimShimmer,
+#wheelStopFlash,
+#wheelParticles {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+#wheelRimShimmer {
+  inset: 4%;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 249, 191, 0.95) 0%, rgba(255, 216, 86, 0.9) 7%, rgba(255, 189, 34, 0.28) 16%, transparent 26%),
+    radial-gradient(circle at 70% 72%, rgba(255, 243, 171, 0.75) 0%, rgba(255, 186, 30, 0.4) 12%, transparent 28%);
+  box-shadow:
+    inset 0 0 8px rgba(255, 246, 173, 0.9),
+    0 0 10px rgba(255, 208, 64, 0.45),
+    0 0 25px rgba(255, 191, 0, 0.25);
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+
+#wheelRimShimmer::before {
+  content: "";
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 255, 255, 0) 0deg,
+    rgba(255, 245, 222, 0.7) 18deg,
+    rgba(255, 195, 10, 0.2) 38deg,
+    rgba(255, 255, 255, 0) 58deg,
+    rgba(255, 255, 255, 0) 112deg,
+    rgba(255, 244, 168, 0.9) 136deg,
+    rgba(255, 195, 10, 0.22) 162deg,
+    rgba(255, 255, 255, 0) 195deg,
+    rgba(255, 255, 255, 0) 360deg
+  );
+  mask: radial-gradient(farthest-side, transparent calc(100% - 18px), #000 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 18px), #000 0);
+  animation: rimRotate 2.2s linear infinite;
+  opacity: 0.95;
+}
+
+#wheelParticles {
+  overflow: visible;
+  filter: drop-shadow(0 0 8px rgba(255, 214, 68, 0.9));
+}
+
+.wheel-particle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffbe8 0%, #ffd75f 28%, #f2a500 68%, rgba(191, 120, 0, 0.85) 100%);
+  box-shadow: 0 0 10px rgba(255, 222, 119, 0.82), 0 0 18px rgba(255, 191, 57, 0.9);
+  opacity: 0;
+  animation: particleFlight 700ms cubic-bezier(0.12, 0.78, 0.2, 1) forwards;
+}
+
+#wheelStopFlash {
+  inset: 6%;
+  background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255, 232, 135, 0.72) 18%, rgba(255, 195, 0, 0.42) 32%, rgba(255, 142, 0, 0.18) 47%, transparent 64%);
+  opacity: 0;
+  transform: scale(0.7);
+  pointer-events: none;
+  z-index: 3;
+}
+
+#wheelStopFlash.is-flashing {
+  animation: stopFlash 420ms ease-out;
 }
 
 #wheelImage {
@@ -186,6 +327,66 @@ button {
     drop-shadow(0 0 16px #ffca0066);
   z-index: 1;
   will-change: transform;
+}
+
+@keyframes rimPulse {
+  0% {
+    opacity: 0.65;
+    transform: scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes rimRotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1.08);
+  }
+}
+
+@keyframes particleFlight {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.38);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.35);
+  }
+}
+
+@keyframes stopFlash {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+
+  16% {
+    opacity: 1;
+    transform: scale(0.98);
+  }
+
+  52% {
+    opacity: 0.8;
+    transform: scale(1.12);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
 }
 
 #pointer {
@@ -309,18 +510,131 @@ button {
   max-height: 100%;
   object-fit: contain;
   object-position: center;
-  transform: translate(-50%, -50%) scale(.94);
+  transform: translate(-50%, -50%) scale(.92);
   opacity: 0;
   filter: drop-shadow(0 0 20px #ffdc22);
   transition:
-    opacity .4s,
-    transform .65s,
+    opacity .35s ease,
+    transform .72s cubic-bezier(.17,.84,.44,1),
     left .85s,
     top .85s,
     width .85s,
     filter .3s;
 }
 
+#revealAura,
+#revealParticles {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 12;
+}
+
+#revealAura {
+  background: radial-gradient(circle, rgba(255, 242, 164, 0.96) 0%, rgba(255, 209, 62, 0.7) 22%, rgba(255, 166, 0, 0.25) 40%, transparent 68%);
+  filter: blur(6px);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.9);
+  transition: opacity .2s ease, transform .7s cubic-bezier(.17,.84,.44,1);
+}
+
+#revealParticles {
+  overflow: visible;
+  filter: drop-shadow(0 0 12px rgba(255, 210, 65, 0.9));
+  opacity: 0;
+}
+
+.reveal-particle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffde1 0%, #ffe48f 18%, #ffbb22 52%, rgba(165, 104, 0, 0.85) 100%);
+  box-shadow: 0 0 12px rgba(255, 222, 110, 0.92), 0 0 18px rgba(255, 177, 31, 0.88);
+  opacity: 0;
+  animation: revealParticleBurst 860ms ease-out forwards;
+}
+
+@keyframes revealParticleBurst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+
+  16% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.25);
+  }
+}
+
+@keyframes revealFlash {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.88);
+  }
+
+  18% {
+    opacity: 0.96;
+    transform: translate(-50%, -50%) scale(1.03);
+  }
+
+  45% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.18);
+  }
+}
+
+#game.show-character #revealAura {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+#game.show-character #revealParticles {
+  opacity: 1;
+}
+
+#game.show-character #characterReveal {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.03);
+  animation: characterRevealPop 720ms cubic-bezier(.16,.82,.26,1);
+}
+
+@keyframes characterRevealPop {
+  0% {
+    transform: translate(-50%, -50%) scale(.92);
+  }
+
+  32% {
+    transform: translate(-50%, -50%) scale(1.025);
+  }
+
+  58% {
+    transform: translate(-50%, -50%) scale(1.012);
+  }
+
+  82% {
+    transform: translate(-50%, -50%) scale(1.002);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
 
 #speech {
   position: absolute;
@@ -331,9 +645,79 @@ button {
   height: auto;
   object-fit: contain;
   opacity: 0;
-  transform: translateY(15px) scale(.92);
-  transition: opacity .35s, transform .35s;
+  transform: translateY(18px) scale(.78);
+  transition: opacity .5s ease, transform .8s cubic-bezier(.17,.84,.44,1), filter .5s ease;
+  filter: blur(2px);
   pointer-events: none;
+}
+
+#speech:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  box-shadow: 0 0 0 1px rgba(255, 205, 72, 0.15);
+}
+
+@keyframes bubbleIntro {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(.78);
+    filter: blur(2px);
+  }
+
+  35% {
+    opacity: 0.7;
+    transform: translateY(4px) scale(.94);
+    filter: blur(1px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+#game:not(.show-speech) #speech {
+  opacity: 0;
+  transform: translateY(18px) scale(.78);
+  filter: blur(2px);
+}
+
+#game.show-speech #speech {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  animation: bubbleIntro 620ms cubic-bezier(.18,.89,.32,1.1);
+}
+
+#game.show-speech #speech::after {
+  content: "";
+  position: absolute;
+  inset: -12% -15%;
+  border-radius: 28%;
+  background: radial-gradient(circle, rgba(255, 228, 125, 0.42) 0%, rgba(255, 201, 66, 0.18) 35%, transparent 72%);
+  z-index: -1;
+  opacity: 0.9;
+  animation: bubbleGlow 850ms ease-out;
+}
+
+@keyframes bubbleGlow {
+  0% {
+    opacity: 0;
+    transform: scale(.82);
+  }
+
+  28% {
+    opacity: 0.9;
+    transform: scale(1.06);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
 }
 
 /* REWARD AND CTA */
@@ -413,6 +797,13 @@ button {
   filter: blur(2.5px);
 }
 
+#game.scene-reveal #wheelGlow {
+  box-shadow:
+    0 0 20px rgba(255, 222, 103, 0.42),
+    0 0 38px rgba(255, 187, 54, 0.24),
+    inset 0 0 26px rgba(255, 213, 109, 0.23);
+}
+
 #game.scene-reveal #girlMystery,
 #game.scene-reveal #questionMark {
   opacity: 0;
@@ -426,9 +817,12 @@ button {
 }
 
 #game.show-character #characterReveal {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
   cursor: pointer;
+}
+
+#game.show-character #bgImage,
+#game.show-character #ambient {
+  transform: scale(1.025) translate3d(0, 2px, 0);
 }
 
 #game.scene-final #characterReveal {
@@ -587,6 +981,8 @@ button {
     draggable="false"
   >
 
+  <div id="bgDust" aria-hidden="true"></div>
+
   <div id="headline">
     <img class="asset" id="title1" src="assets/title-1.png" alt="" draggable="false">
     <img class="asset" id="title2" src="assets/title-2.png" alt="" draggable="false">
@@ -600,6 +996,12 @@ button {
 
   <section id="wheelWrap" aria-label="Prize wheel">
     <div id="wheelGlow"></div>
+
+    <div id="wheelEffects" aria-hidden="true">
+      <div id="wheelRimShimmer"></div>
+      <div id="wheelParticles"></div>
+      <div id="wheelStopFlash"></div>
+    </div>
 
     <img
       id="wheelImage"
@@ -638,6 +1040,9 @@ button {
   >
 
   <div id="blurOverlay"></div>
+
+  <div id="revealAura" aria-hidden="true"></div>
+  <div id="revealParticles" aria-hidden="true"></div>
 
   <img
     class="asset"
@@ -682,7 +1087,7 @@ button {
     firstRevealDelay: 2100,
     characterDelay: 220,
     firstBubbleDelay: 700,
-    secondBubbleDelay: 3700,
+    secondBubbleDelay: 2600,
     sceneTwoDelayAfterBubble: 2600,
 
     spinDurationFirst: 4600,
@@ -713,11 +1118,18 @@ button {
   const $ = id => document.getElementById(id);
 
   const game = $('game');
+  const bgDust = $('bgDust');
   const wheel = $('wheelImage');
+  const wheelEffects = $('wheelEffects');
+  const wheelRimShimmer = $('wheelRimShimmer');
+  const wheelParticles = $('wheelParticles');
+  const wheelStopFlash = $('wheelStopFlash');
   const spinBtn = $('spinBtn');
   const girl = $('girlMystery');
   const question = $('questionMark');
   const reveal = $('characterReveal');
+  const revealAura = $('revealAura');
+  const revealParticles = $('revealParticles');
   const speech = $('speech');
   const soundBtn = $('soundBtn');
   const soundGlyph = soundBtn.querySelector('span');
@@ -740,6 +1152,7 @@ button {
   let wheelAnimationMode = 'idle';
   let wheelAnimationGeneration = 0;
   let fadeGeneration = 0;
+  let spinParticlesTimer = null;
 
   /* TIMER CONTROL */
 
@@ -845,7 +1258,16 @@ button {
 
     if (spinAudio) {
       spinAudio.volume = 0.8;
+      spinAudio.playbackRate = 1;
     }
+  }
+
+  function syncSpinAudioToDeceleration(progress) {
+    if (!spinAudio) return;
+
+    const t = Math.max(0, Math.min(1, progress));
+    spinAudio.volume = Math.max(0.03, 0.8 * (1 - Math.pow(t, 2.4)));
+    spinAudio.playbackRate = 1.12 - t * 0.9;
   }
 
   function fadeOutSpinAudio() {
@@ -866,12 +1288,14 @@ button {
         0,
         startVolume * (1 - ease)
       );
+      spinAudio.playbackRate = Math.max(0.45, 1 - t * 0.7);
 
       if (t < 1) {
         requestAnimationFrame(tick);
       } else {
         stopAudio(spinAudio);
         spinAudio.volume = 0.8;
+        spinAudio.playbackRate = 1;
       }
     }
 
@@ -899,10 +1323,57 @@ button {
 
   function applyWheelRotation() {
     wheel.style.transform = `rotate(${rotation}deg)`;
+    wheelEffects.style.transform = `rotate(${rotation}deg)`;
+  }
+
+  function spawnWheelParticles(count = 4) {
+    for (let i = 0; i < count; i++) {
+      const particle = document.createElement('span');
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 18 + Math.random() * 34;
+      const dx = Math.cos(angle) * (22 + Math.random() * 64);
+      const dy = Math.sin(angle) * (22 + Math.random() * 64);
+      const size = 3 + Math.random() * 7;
+
+      particle.className = 'wheel-particle';
+      particle.style.setProperty('--dx', `${dx}px`);
+      particle.style.setProperty('--dy', `${dy}px`);
+      particle.style.setProperty('--size', `${size}px`);
+      particle.style.left = `${50 + Math.cos(angle) * radius}%`;
+      particle.style.top = `${50 + Math.sin(angle) * radius}%`;
+      particle.style.animationDuration = `${520 + Math.random() * 800}ms`;
+      particle.style.opacity = '0';
+
+      wheelParticles.appendChild(particle);
+      particle.addEventListener('animationend', () => particle.remove(), { once: true });
+    }
+  }
+
+  function startSpinParticles() {
+    stopSpinParticles();
+
+    spinParticlesTimer = setInterval(() => {
+      spawnWheelParticles(4 + Math.floor(Math.random() * 3));
+    }, 75);
+  }
+
+  function stopSpinParticles() {
+    if (spinParticlesTimer) {
+      clearInterval(spinParticlesTimer);
+      spinParticlesTimer = null;
+    }
+  }
+
+  function triggerStopFlash() {
+    wheelStopFlash.classList.remove('is-flashing');
+    void wheelStopFlash.offsetWidth;
+    wheelStopFlash.classList.add('is-flashing');
   }
 
   function startContinuousSpin() {
     cancelWheelAnimation();
+    startSpinParticles();
+    wheelRimShimmer.style.opacity = '1';
 
     const generation = wheelAnimationGeneration;
     wheelAnimationMode = 'continuous';
@@ -939,6 +1410,7 @@ button {
 
     const startAngle = rotation;
     const deltaAngle = 360 * Math.max(1, Math.round(turns));
+    const finishAngle = startAngle + deltaAngle;
     const startAt = performance.now();
 
     function frame(now) {
@@ -950,10 +1422,12 @@ button {
       }
 
       const t = Math.min(1, (now - startAt) / duration);
-
       const ease = 1 - Math.pow(1 - t, 4);
+      const spring = Math.sin(t * Math.PI * 2.2) * (1 - t) * 0.18;
+      const easedValue = Math.min(1, ease + spring);
 
-      rotation = startAngle + deltaAngle * ease;
+      syncSpinAudioToDeceleration(t);
+      rotation = startAngle + deltaAngle * easedValue;
       applyWheelRotation();
 
       if (t < 1) {
@@ -961,16 +1435,47 @@ button {
         return;
       }
 
-      rotation = startAngle + deltaAngle;
+      rotation = finishAngle;
       applyWheelRotation();
 
-      wheelAnimationId = 0;
-      wheelAnimationMode = 'idle';
-      fadeOutSpinAudio();
+      const bounceStartAt = performance.now();
+      const bounceDuration = 180;
 
-      if (typeof done === 'function') {
-        done();
+      function bounceFrame(bounceNow) {
+        if (
+          generation !== wheelAnimationGeneration ||
+          wheelAnimationMode !== 'decelerating'
+        ) {
+          return;
+        }
+
+        const bounceT = Math.min(1, (bounceNow - bounceStartAt) / bounceDuration);
+        const bounceWave = Math.sin(bounceT * Math.PI) * (1 - bounceT) * 10;
+
+        rotation = finishAngle + bounceWave;
+        applyWheelRotation();
+
+        if (bounceT < 1) {
+          wheelAnimationId = requestAnimationFrame(bounceFrame);
+          return;
+        }
+
+        rotation = finishAngle;
+        applyWheelRotation();
+
+        wheelAnimationId = 0;
+        wheelAnimationMode = 'idle';
+        stopSpinParticles();
+        wheelRimShimmer.style.opacity = '0';
+        triggerStopFlash();
+        fadeOutSpinAudio();
+
+        if (typeof done === 'function') {
+          done();
+        }
       }
+
+      wheelAnimationId = requestAnimationFrame(bounceFrame);
     }
 
     wheelAnimationId = requestAnimationFrame(frame);
@@ -978,6 +1483,8 @@ button {
 
   function resetWheelToStart() {
     cancelWheelAnimation();
+    stopSpinParticles();
+    wheelRimShimmer.style.opacity = '0';
 
     rotation = START_ANGLE;
     applyWheelRotation();
@@ -993,9 +1500,76 @@ button {
     speech.src = src;
   }
 
+  function showBubble(src) {
+    setBubble(src);
+
+    if (game.classList.contains('show-speech')) {
+      game.classList.remove('show-speech');
+      void game.offsetWidth;
+    }
+
+    game.classList.add('show-speech');
+    speech.style.animation = 'none';
+    void speech.offsetWidth;
+    speech.style.animation = 'bubbleIntro 480ms cubic-bezier(.18,.89,.32,1.1)';
+  }
+
   function setCharacter(src) {
     reveal.src = src;
   }
+
+  function triggerRevealParticles() {
+    revealParticles.innerHTML = '';
+
+    for (let i = 0; i < 18; i++) {
+      const particle = document.createElement('span');
+      const angle = (Math.PI * 2 * i) / 18 + Math.random() * 0.45;
+      const distance = 24 + Math.random() * 88;
+      const dx = Math.cos(angle) * distance;
+      const dy = Math.sin(angle) * distance * 0.9;
+      const size = 4 + Math.random() * 8;
+
+      particle.className = 'reveal-particle';
+      particle.style.setProperty('--dx', `${dx}px`);
+      particle.style.setProperty('--dy', `${dy}px`);
+      particle.style.setProperty('--size', `${size}px`);
+      particle.style.left = '50%';
+      particle.style.top = '50%';
+      particle.style.opacity = '0';
+
+      revealParticles.appendChild(particle);
+    }
+
+    revealAura.style.animation = 'none';
+    void revealAura.offsetWidth;
+    revealAura.style.animation = 'revealFlash 600ms ease-out';
+  }
+
+  function createDustParticles() {
+    if (!bgDust) return;
+
+    bgDust.innerHTML = '';
+
+    for (let i = 0; i < 18; i++) {
+      const dot = document.createElement('span');
+      const size = 2 + Math.random() * 5;
+      const x = Math.random() * 100;
+      const y = Math.random() * 100;
+      const delay = Math.random() * 5;
+      const duration = 6 + Math.random() * 12;
+
+      dot.className = 'bg-dust-particle';
+      dot.style.setProperty('--size', `${size}px`);
+      dot.style.left = `${x}%`;
+      dot.style.top = `${y}%`;
+      dot.style.animationDelay = `${delay}s`;
+      dot.style.animationDuration = `${duration}s`;
+
+      bgDust.appendChild(dot);
+    }
+  }
+
+  createDustParticles();
 
   /* SCENE STATE */
 
@@ -1020,13 +1594,13 @@ button {
     game.classList.add('scene-final');
 
     setCharacter(CONFIG.characterFinal);
-    setBubble(CONFIG.finalBubble);
+    showBubble(CONFIG.finalBubble);
 
     reveal.style.opacity = '';
     speech.style.opacity = '';
     speech.style.transform = '';
-
-    game.classList.add('show-speech');
+    speech.style.filter = '';
+    speech.style.animation = '';
 
     safePlay(wowAudio, true);
   }
@@ -1048,20 +1622,20 @@ button {
 
       fadeOutSpinAudio();
       game.classList.add('show-character');
+      triggerRevealParticles();
     }, CONFIG.characterDelay);
 
     managedTimeout(() => {
       if (isFinalScene()) return;
 
-      setBubble(CONFIG.bubbleOne);
-      game.classList.add('show-speech');
+      showBubble(CONFIG.bubbleOne);
     }, CONFIG.firstBubbleDelay);
 
     managedTimeout(() => {
       if (isFinalScene()) return;
 
-      setBubble(CONFIG.bubbleTwo);
-    }, CONFIG.secondBubbleDelay);
+      showBubble(CONFIG.bubbleTwo);
+    }, CONFIG.firstBubbleDelay + CONFIG.secondBubbleDelay);
 
     const total =
       CONFIG.firstBubbleDelay +
@@ -1072,6 +1646,7 @@ button {
       if (spinCount !== 1 || isFinalScene()) return;
 
       cancelWheelAnimation();
+      stopSpinParticles();
       stopSpinAudio();
 
       spinning = false;
