@@ -427,6 +427,48 @@ button {
   pointer-events: none;
 }
 
+#spinHint {
+  position: absolute;
+  z-index: 9;
+  left: 56%;
+  top: 57%;
+  width: 17%;
+  height: 17%;
+  object-fit: contain;
+  transform-origin: center;
+  filter:
+    drop-shadow(0 0 3px #fff8d6)
+    drop-shadow(0 0 8px #ffdf22)
+    drop-shadow(0 0 15px rgba(255, 187, 0, 0.7));
+  pointer-events: none;
+  animation: handNudge 1s ease-in-out infinite;
+  transition: opacity .3s ease, visibility .3s ease;
+}
+
+#spinHint.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  animation: none;
+}
+
+@keyframes handNudge {
+  0%, 100% {
+    transform: rotate(-42deg);
+    filter:
+      drop-shadow(0 0 3px #fff8d6)
+      drop-shadow(0 0 8px #ffdf22)
+      drop-shadow(0 0 15px rgba(255, 187, 0, 0.7));
+  }
+
+  50% {
+    transform: rotate(-42deg) translate(-3px, -3px);
+    filter:
+      drop-shadow(0 0 5px #fff8d6)
+      drop-shadow(0 0 13px #ffdf22)
+      drop-shadow(0 0 24px rgba(255, 187, 0, 0.9));
+  }
+}
+
 @keyframes spinPulse {
   0%, 100% {
     transform: translate(-50%, -50%) scale(1);
@@ -964,7 +1006,8 @@ button {
 
 @media (prefers-reduced-motion: reduce) {
   #questionMark,
-  #spinBtn {
+  #spinBtn,
+  #spinHint {
     animation-duration: 2.5s;
   }
 }
@@ -1021,6 +1064,7 @@ button {
     <button id="spinBtn" type="button" aria-label="Spin the wheel">
       <img src="assets/spin.png" alt="" draggable="false">
     </button>
+    <img id="spinHint" src="assets/hand.webp" alt="" aria-hidden="true" draggable="false">
   </section>
 
   <img
@@ -1087,7 +1131,7 @@ button {
     firstRevealDelay: 2100,
     characterDelay: 220,
     firstBubbleDelay: 700,
-    secondBubbleDelay: 2600,
+    secondBubbleDelay: 4000,
     sceneTwoDelayAfterBubble: 2600,
 
     spinDurationFirst: 4600,
@@ -1125,6 +1169,7 @@ button {
   const wheelParticles = $('wheelParticles');
   const wheelStopFlash = $('wheelStopFlash');
   const spinBtn = $('spinBtn');
+  const spinHint = $('spinHint');
   const girl = $('girlMystery');
   const question = $('questionMark');
   const reveal = $('characterReveal');
@@ -1423,11 +1468,9 @@ button {
 
       const t = Math.min(1, (now - startAt) / duration);
       const ease = 1 - Math.pow(1 - t, 4);
-      const spring = Math.sin(t * Math.PI * 2.2) * (1 - t) * 0.18;
-      const easedValue = Math.min(1, ease + spring);
 
       syncSpinAudioToDeceleration(t);
-      rotation = startAngle + deltaAngle * easedValue;
+      rotation = startAngle + deltaAngle * ease;
       applyWheelRotation();
 
       if (t < 1) {
@@ -1438,44 +1481,16 @@ button {
       rotation = finishAngle;
       applyWheelRotation();
 
-      const bounceStartAt = performance.now();
-      const bounceDuration = 180;
+      wheelAnimationId = 0;
+      wheelAnimationMode = 'idle';
+      stopSpinParticles();
+      wheelRimShimmer.style.opacity = '0';
+      triggerStopFlash();
+      fadeOutSpinAudio();
 
-      function bounceFrame(bounceNow) {
-        if (
-          generation !== wheelAnimationGeneration ||
-          wheelAnimationMode !== 'decelerating'
-        ) {
-          return;
-        }
-
-        const bounceT = Math.min(1, (bounceNow - bounceStartAt) / bounceDuration);
-        const bounceWave = Math.sin(bounceT * Math.PI) * (1 - bounceT) * 10;
-
-        rotation = finishAngle + bounceWave;
-        applyWheelRotation();
-
-        if (bounceT < 1) {
-          wheelAnimationId = requestAnimationFrame(bounceFrame);
-          return;
-        }
-
-        rotation = finishAngle;
-        applyWheelRotation();
-
-        wheelAnimationId = 0;
-        wheelAnimationMode = 'idle';
-        stopSpinParticles();
-        wheelRimShimmer.style.opacity = '0';
-        triggerStopFlash();
-        fadeOutSpinAudio();
-
-        if (typeof done === 'function') {
-          done();
-        }
+      if (typeof done === 'function') {
+        done();
       }
-
-      wheelAnimationId = requestAnimationFrame(bounceFrame);
     }
 
     wheelAnimationId = requestAnimationFrame(frame);
@@ -1660,6 +1675,7 @@ button {
       game.classList.add('scene-two');
 
       resetWheelToStart();
+      spinHint.classList.remove('is-hidden');
 
       $('title2').src = CONFIG.sceneTwoTitle2;
       $('title3').src = CONFIG.sceneTwoTitle3;
@@ -1723,7 +1739,10 @@ button {
     );
   }
 
-  spinBtn.addEventListener('click', beginSpin);
+  spinBtn.addEventListener('click', () => {
+    spinHint.classList.add('is-hidden');
+    beginSpin();
+  });
 
   /* SOUND BUTTON */
 
