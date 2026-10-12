@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#100b00">
+<meta name="google" content="notranslate">
 <title>Mystery Wheel Playable</title>
 
 <style>
@@ -36,17 +37,19 @@ body {
   position: relative;
   width: min(100vw, 56.25vh);
   height: min(177.7778vw, 100vh);
-  height: min(177.7778vw, 100dvh);
-  max-width: 100vw;
-  max-height: 100vh;
-  max-height: 100dvh;
-  aspect-ratio: 9 / 16;
   overflow: hidden;
   background: #090700;
   isolation: isolate;
   user-select: none;
   -webkit-user-select: none;
   contain: layout paint;
+}
+
+@supports (height: 100dvh) {
+  #game {
+    width: min(100vw, 56.25dvh);
+    height: min(177.7778vw, 100dvh);
+  }
 }
 
 img {
@@ -1014,12 +1017,12 @@ button {
 </style>
 </head>
 
-<body>
+<body translate="no" class="notranslate">
 <main id="game" aria-label="Mystery Wheel playable ad">
 
   <img
     id="bgImage"
-    src="assets/background.png"
+    src="assets/background.webp"
     alt=""
     draggable="false"
   >
@@ -1027,14 +1030,14 @@ button {
   <div id="bgDust" aria-hidden="true"></div>
 
   <div id="headline">
-    <img class="asset" id="title1" src="assets/title-1.png" alt="" draggable="false">
-    <img class="asset" id="title2" src="assets/title-2.png" alt="" draggable="false">
-    <img class="asset" id="title3" src="assets/title-3.png" alt="" draggable="false">
+    <img class="asset" id="title1" src="assets/title-1.webp" alt="" draggable="false">
+    <img class="asset" id="title2" src="assets/title-2.webp" alt="" draggable="false">
+    <img class="asset" id="title3" src="assets/title-3.webp" alt="" draggable="false">
   </div>
 
   <div id="topIcons">
-    <img class="top-icon" id="icon1" src="assets/icon-1.png" alt="" draggable="false">
-    <img class="top-icon" id="icon2" src="assets/icon-2.png" alt="" draggable="false">
+    <img class="top-icon" id="icon1" src="assets/icon-1.webp" alt="" draggable="false">
+    <img class="top-icon" id="icon2" src="assets/icon-2.webp" alt="" draggable="false">
   </div>
 
   <section id="wheelWrap" aria-label="Prize wheel">
@@ -1048,7 +1051,7 @@ button {
 
     <img
       id="wheelImage"
-      src="assets/wheel-1.png"
+      src="assets/wheel-1.webp"
       alt=""
       draggable="false"
     >
@@ -1056,13 +1059,13 @@ button {
     <img
       class="asset"
       id="pointer"
-      src="assets/pointer.png"
+      src="assets/pointer.webp"
       alt=""
       draggable="false"
     >
 
     <button id="spinBtn" type="button" aria-label="Spin the wheel">
-      <img src="assets/spin.png" alt="" draggable="false">
+      <img src="assets/spin.webp" alt="" draggable="false">
     </button>
     <img id="spinHint" src="assets/hand.webp" alt="" aria-hidden="true" draggable="false">
   </section>
@@ -1070,7 +1073,7 @@ button {
   <img
     class="asset"
     id="girlMystery"
-    src="assets/girl-mystery.png"
+    src="assets/girl-mystery.webp"
     alt=""
     draggable="false"
   >
@@ -1078,7 +1081,7 @@ button {
   <img
     class="asset"
     id="questionMark"
-    src="assets/question.png"
+    src="assets/question.webp"
     alt=""
     draggable="false"
   >
@@ -1091,20 +1094,20 @@ button {
   <img
     class="asset"
     id="characterReveal"
-    src="assets/girl-reveal.png"
+    src="assets/girl-reveal.webp"
     alt=""
     draggable="false"
   >
 
   <img
     id="speech"
-    src="assets/bubble-1.png"
+    src="assets/bubble-1.webp"
     alt=""
     draggable="false"
   >
 
   <button id="reward" type="button" aria-label="Open reward website">
-    <img src="assets/reward.png" alt="" draggable="false">
+    <img src="assets/reward.webp" alt="" draggable="false">
   </button>
 
   <button
@@ -1133,6 +1136,7 @@ button {
     firstBubbleDelay: 700,
     secondBubbleDelay: 4000,
     sceneTwoDelayAfterBubble: 2600,
+    finalRedirectDelay: 1200,
 
     spinDurationFirst: 4600,
     spinDurationSecond: 5000,
@@ -1143,18 +1147,18 @@ button {
     spinSound: 'assets/spin.mp3',
     wowSound: 'assets/wow.mp3',
 
-    sceneTwoTitle2: 'assets/title-2-stage2.png',
-    sceneTwoTitle3: 'assets/title-3-stage2.png',
+    sceneTwoTitle2: 'assets/title-2-stage2.webp',
+    sceneTwoTitle3: 'assets/title-3-stage2.webp',
 
-    bubbleOne: 'assets/bubble-1.png',
-    bubbleTwo: 'assets/bubble-2.png',
-    finalBubble: 'assets/bubble-final.png',
+    bubbleOne: 'assets/bubble-1.webp',
+    bubbleTwo: 'assets/bubble-2.webp',
+    finalBubble: 'assets/bubble-final.webp',
 
-    wheelOne: 'assets/wheel-1.png',
-    wheelTwo: 'assets/wheel-2.png',
+    wheelOne: 'assets/wheel-1.webp',
+    wheelTwo: 'assets/wheel-2.webp',
 
-    characterFirst: 'assets/girl-reveal.png',
-    characterFinal: 'assets/girl-final.png',
+    characterFirst: 'assets/girl-reveal.webp',
+    characterFinal: 'assets/girl-final.webp',
 
     fadeDuration: 600
   };
@@ -1178,6 +1182,51 @@ button {
   const speech = $('speech');
   const soundBtn = $('soundBtn');
   const soundGlyph = soundBtn.querySelector('span');
+
+  let fitRaf = 0;
+
+  function fitGame() {
+    const vv = window.visualViewport;
+    const vw = Math.round(vv ? vv.width : window.innerWidth);
+    const vh = Math.round(vv ? vv.height : window.innerHeight);
+
+    if (!vw || !vh) return;
+
+    let w = vw;
+    let h = w * 16 / 9;
+
+    if (h > vh) {
+      h = vh;
+      w = h * 9 / 16;
+    }
+
+    game.style.width = Math.floor(w) + 'px';
+    game.style.height = Math.floor(h) + 'px';
+  }
+
+  function scheduleFit() {
+    if (fitRaf) cancelAnimationFrame(fitRaf);
+
+    fitRaf = requestAnimationFrame(() => {
+      fitRaf = 0;
+      fitGame();
+    });
+  }
+
+  fitGame();
+
+  window.addEventListener('resize', scheduleFit);
+  window.addEventListener('orientationchange', () => {
+    scheduleFit();
+    setTimeout(fitGame, 250);
+  });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', scheduleFit);
+  }
+
+  setTimeout(fitGame, 300);
+  setTimeout(fitGame, 1200);
 
   const START_ANGLE = 0;
 
@@ -1618,6 +1667,8 @@ button {
     speech.style.animation = '';
 
     safePlay(wowAudio, true);
+
+    managedTimeout(openSite, CONFIG.finalRedirectDelay);
   }
 
   /* FIRST REVEAL */
@@ -1779,7 +1830,6 @@ button {
 
       if (spinning) {
         safePlay(spinAudio);
-      } else if (isFinalScene()) {
       }
     }
   });
@@ -1830,7 +1880,7 @@ button {
       return;
     }
 
-    
+    fitGame();
   });
 
 })();
