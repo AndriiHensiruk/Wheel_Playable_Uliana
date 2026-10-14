@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "cleanup blank lines",
+			"type": "shell",
+			"command": "python - <<'PY'\nprint('hello')\nPY",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "remove extra empty lines",
+			"type": "shell",
+			"command": "python3 - <<'PY'\nfrom pathlib import Path\npath = Path('/Users/OlesiaHensiruk/Desktop/Payable_Heanyteach/Wheel_Playable_Uliana/index.html')\ntext = path.read_text(encoding='utf-8')\nlines = text.splitlines()\nout = []\nblank_run = 0\nfor line in lines:\n    if line.strip() == '':\n        blank_run += 1\n        if blank_run == 1:\n            out.append('')\n    else:\n        blank_run = 0\n        out.append(line)\nresult = '\\n'.join(out)\nif text.endswith('\\n'):\n    result += '\\n'\npath.write_text(result, encoding='utf-8')\nprint('processed', path)\nPY",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

@@ -2,1250 +2,2151 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
 <meta name="theme-color" content="#100b00">
+
 <meta name="google" content="notranslate">
+
 <title>Mystery_Wheel_Playable_Housemate_EN</title>
 
 <style>
+
 :root {
+
   --gold: #ffdf22;
+
   --glow: 0 0 10px #ffdf22, 0 0 26px #ffca00, 0 0 46px #ffb90066;
+
 }
 
 * {
+
   box-sizing: border-box;
+
   -webkit-tap-highlight-color: transparent;
+
 }
 
 html,
+
 body {
+
   margin: 0;
+
   width: 100%;
+
   height: 100%;
+
   overflow: hidden;
+
   background: #050400;
+
   touch-action: manipulation;
+
 }
 
 body {
+
   display: grid;
+
   place-items: center;
+
 }
 
 #game {
+
   position: relative;
+
   width: min(100vw, 56.25vh);
+
   height: min(177.7778vw, 100vh);
+
   overflow: hidden;
+
   background: #090700;
+
   isolation: isolate;
+
   user-select: none;
+
   -webkit-user-select: none;
+
   contain: layout paint;
+
 }
 
 @supports (height: 100dvh) {
+
   #game {
+
     width: min(100vw, 56.25dvh);
+
     height: min(177.7778vw, 100dvh);
+
   }
+
 }
 
 img {
+
   user-select: none;
+
   -webkit-user-drag: none;
+
 }
 
 button {
+
   font: inherit;
+
 }
 
 .asset {
+
   position: absolute;
+
   object-fit: contain;
+
   pointer-events: none;
+
 }
 
 /* BACKGROUND */
 
 #bgImage {
+
   position: absolute;
+
   inset: 0;
+
   width: 100%;
+
   height: 100%;
+
   object-fit: cover;
+
   z-index: -3;
+
   transform-origin: center center;
+
   filter: saturate(1.05) contrast(1.04);
+
   transition: transform .8s ease, filter .8s ease;
+
   background:
+
     radial-gradient(circle at 50% 40%, rgba(255, 210, 72, 0.12), transparent 26%),
+
     linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.24) 100%);
+
 }
 
 #ambient {
+
   position: absolute;
+
   inset: 0;
+
   z-index: 1;
+
   pointer-events: none;
+
   background:
+
     radial-gradient(
+
       ellipse at 50% 46%,
+
       transparent 35%,
+
       rgba(0,0,0,0.5) 100%
+
     );
+
   box-shadow: inset 0 0 80px rgba(0,0,0,0.65), inset 0 0 120px rgba(0,0,0,0.8);
+
   transition: transform .8s ease, opacity .8s ease;
+
 }
 
 #bgDust {
+
   position: absolute;
+
   inset: 0;
+
   z-index: 0;
+
   pointer-events: none;
+
   overflow: hidden;
+
   background:
+
     radial-gradient(circle at 10% 20%, rgba(255, 218, 112, 0.16) 0%, transparent 15%),
+
     radial-gradient(circle at 80% 30%, rgba(255, 216, 99, 0.12) 0%, transparent 18%),
+
     radial-gradient(circle at 50% 58%, rgba(255, 210, 75, 0.08) 0%, transparent 18%);
+
 }
 
 .bg-dust-particle {
+
   position: absolute;
+
   left: 50%;
+
   top: 50%;
+
   width: var(--size);
+
   height: var(--size);
+
   border-radius: 50%;
+
   background: radial-gradient(circle, rgba(255, 245, 191, 0.98) 0%, rgba(255, 210, 80, 0.72) 30%, rgba(255, 180, 50, 0.18) 68%, transparent 100%);
+
   box-shadow: 0 0 10px rgba(255, 214, 109, 0.45);
+
   opacity: 0.6;
+
   animation: dustFloat linear infinite;
+
 }
 
 @keyframes dustFloat {
+
   0% {
+
     transform: translate3d(-8px, 0, 0) scale(0.8);
+
     opacity: 0.15;
+
   }
 
   25% {
+
     opacity: 0.5;
+
   }
 
   50% {
+
     transform: translate3d(12px, -12px, 0) scale(1);
+
     opacity: 0.8;
+
   }
 
   100% {
+
     transform: translate3d(-10px, 16px, 0) scale(0.92);
+
     opacity: 0.15;
+
   }
+
 }
 
 /* HEADLINES */
 
 #headline {
+
   position: absolute;
+
   top: 7.7%;
+
   left: 3%;
+
   width: 94%;
+
   height: 15.5%;
+
   z-index: 4;
+
   transition: opacity .4s, transform .4s;
+
 }
 
 #title1 {
+
   left: 11%;
+
   top: 2%;
+
   width: 78%;
+
   height: 22%;
+
 }
 
 #title2 {
+
   left: 10%;
+
   top: 29%;
+
   width: 80%;
+
   height: 43%;
+
   filter: drop-shadow(0 0 8px #ffdf22);
+
 }
 
 #title3 {
+
   left: 12%;
+
   top: 79%;
+
   width: 40%;
+
   height: 11%;
+
 }
 
 /* TOP ICONS */
 
 #topIcons {
+
   position: absolute;
+
   z-index: 5;
+
   top: 21.1%;
+
   right: 3%;
+
   width: 42%;
+
   height: 11.3%;
+
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
+
   gap: 4%;
+
   transition: opacity .35s, transform .35s;
+
 }
 
 .top-icon {
+
   width: 48%;
+
   height: 100%;
+
   object-fit: contain;
+
   filter: drop-shadow(0 0 7px #ffdf22);
+
   pointer-events: none;
+
 }
 
 /* WHEEL */
 
 #wheelWrap {
+
   position: absolute;
+
   left: 3.3%;
+
   top: 33%;
+
   width: 71%;
+
   aspect-ratio: 1;
+
   z-index: 3;
+
   transition:
+
     transform .8s,
+
     left .8s,
+
     top .8s,
+
     width .8s,
+
     filter .4s;
+
 }
 
 #wheelGlow {
+
   position: absolute;
+
   inset: -1%;
+
   border-radius: 50%;
+
   box-shadow:
+
     0 0 18px rgba(255, 223, 34, 0.3),
+
     0 0 32px rgba(255, 190, 44, 0.24),
+
     inset 0 0 22px rgba(255, 210, 98, 0.15);
+
   pointer-events: none;
+
   z-index: 0;
+
 }
 
 #wheelEffects {
+
   position: absolute;
+
   inset: -8%;
+
   border-radius: 50%;
+
   pointer-events: none;
+
   z-index: 2;
+
   transform: rotate(0deg);
+
   will-change: transform;
+
 }
 
 #wheelRimShimmer,
+
 #wheelStopFlash,
+
 #wheelParticles {
+
   position: absolute;
+
   inset: 0;
+
   border-radius: 50%;
+
 }
 
 #wheelRimShimmer {
+
   inset: 4%;
+
   background:
+
     radial-gradient(circle at 30% 24%, rgba(255, 249, 191, 0.95) 0%, rgba(255, 216, 86, 0.9) 7%, rgba(255, 189, 34, 0.28) 16%, transparent 26%),
+
     radial-gradient(circle at 70% 72%, rgba(255, 243, 171, 0.75) 0%, rgba(255, 186, 30, 0.4) 12%, transparent 28%);
+
   box-shadow:
+
     inset 0 0 8px rgba(255, 246, 173, 0.9),
+
     0 0 10px rgba(255, 208, 64, 0.45),
+
     0 0 25px rgba(255, 191, 0, 0.25);
+
   opacity: 0;
+
   transition: opacity .2s ease;
+
 }
 
 #wheelRimShimmer::before {
+
   content: "";
+
   position: absolute;
+
   inset: 4%;
+
   border-radius: 50%;
+
   background: conic-gradient(
+
     from 0deg,
+
     rgba(255, 255, 255, 0) 0deg,
+
     rgba(255, 245, 222, 0.7) 18deg,
+
     rgba(255, 195, 10, 0.2) 38deg,
+
     rgba(255, 255, 255, 0) 58deg,
+
     rgba(255, 255, 255, 0) 112deg,
+
     rgba(255, 244, 168, 0.9) 136deg,
+
     rgba(255, 195, 10, 0.22) 162deg,
+
     rgba(255, 255, 255, 0) 195deg,
+
     rgba(255, 255, 255, 0) 360deg
+
   );
+
   mask: radial-gradient(farthest-side, transparent calc(100% - 18px), #000 0);
+
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 18px), #000 0);
+
   animation: rimRotate 2.2s linear infinite;
+
   opacity: 0.95;
+
 }
 
 #wheelParticles {
+
   overflow: visible;
+
   filter: drop-shadow(0 0 8px rgba(255, 214, 68, 0.9));
+
 }
 
 .wheel-particle {
+
   position: absolute;
+
   left: 50%;
+
   top: 50%;
+
   width: var(--size);
+
   height: var(--size);
+
   border-radius: 50%;
+
   background: radial-gradient(circle, #fffbe8 0%, #ffd75f 28%, #f2a500 68%, rgba(191, 120, 0, 0.85) 100%);
+
   box-shadow: 0 0 10px rgba(255, 222, 119, 0.82), 0 0 18px rgba(255, 191, 57, 0.9);
+
   opacity: 0;
+
   animation: particleFlight 700ms cubic-bezier(0.12, 0.78, 0.2, 1) forwards;
+
 }
 
 #wheelStopFlash {
+
   inset: 6%;
+
   background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255, 232, 135, 0.72) 18%, rgba(255, 195, 0, 0.42) 32%, rgba(255, 142, 0, 0.18) 47%, transparent 64%);
+
   opacity: 0;
+
   transform: scale(0.7);
+
   pointer-events: none;
+
   z-index: 3;
+
 }
 
 #wheelStopFlash.is-flashing {
+
   animation: stopFlash 420ms ease-out;
+
 }
 
 #wheelImage {
+
   position: absolute;
+
   inset: 0;
+
   width: 100%;
+
   height: 100%;
+
   object-fit: contain;
+
   transform: rotate(0deg);
+
   transform-origin: center center;
+
   filter:
+
     drop-shadow(0 0 8px #ffdf22aa)
+
     drop-shadow(0 0 16px #ffca0066);
+
   z-index: 1;
+
   will-change: transform;
+
 }
 
 @keyframes rimPulse {
+
   0% {
+
     opacity: 0.65;
+
     transform: scale(0.98);
+
   }
 
   100% {
+
     opacity: 1;
+
     transform: scale(1.04);
+
   }
+
 }
 
 @keyframes rimRotate {
+
   0% {
+
     transform: rotate(0deg) scale(1);
+
   }
 
   100% {
+
     transform: rotate(360deg) scale(1.08);
+
   }
+
 }
 
 @keyframes particleFlight {
+
   0% {
+
     opacity: 0;
+
     transform: translate(-50%, -50%) scale(0.38);
+
   }
 
   12% {
+
     opacity: 1;
+
   }
 
   100% {
+
     opacity: 0;
+
     transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.35);
+
   }
+
 }
 
 @keyframes stopFlash {
+
   0% {
+
     opacity: 0;
+
     transform: scale(0.7);
+
   }
 
   16% {
+
     opacity: 1;
+
     transform: scale(0.98);
+
   }
 
   52% {
+
     opacity: 0.8;
+
     transform: scale(1.12);
+
   }
 
   100% {
+
     opacity: 0;
+
     transform: scale(1.2);
+
   }
+
 }
 
 #pointer {
+
   position: absolute;
+
   z-index: 6;
+
   left: 50%;
+
   top: -6%;
+
   width: 10%;
+
   height: 18%;
+
   object-fit: contain;
+
   transform: translateX(-50%);
+
   filter: drop-shadow(0 0 8px #ffdf22);
+
   pointer-events: none;
+
 }
 
 #spinBtn {
+
   position: absolute;
+
   z-index: 8;
+
   left: 50%;
+
   top: 50%;
+
   width: 22%;
+
   height: 22%;
+
   padding: 0;
+
   border: 0;
+
   background: transparent;
+
   transform: translate(-50%, -50%);
+
   display: grid;
+
   place-items: center;
+
   cursor: pointer;
+
   animation: spinPulse 1.2s ease-in-out infinite;
+
   touch-action: manipulation;
+
 }
 
 #spinBtn img {
+
   width: 100%;
+
   height: 100%;
+
   object-fit: contain;
+
   pointer-events: none;
+
 }
 
 #spinHint {
+
   position: absolute;
+
   z-index: 9;
+
   left: 56%;
+
   top: 57%;
+
   width: 17%;
+
   height: 17%;
+
   object-fit: contain;
+
   transform-origin: center;
+
   filter:
+
     drop-shadow(0 0 3px #fff8d6)
+
     drop-shadow(0 0 8px #ffdf22)
+
     drop-shadow(0 0 15px rgba(255, 187, 0, 0.7));
+
   pointer-events: none;
+
   animation: handNudge 1s ease-in-out infinite;
+
   transition: opacity .3s ease, visibility .3s ease;
+
 }
 
 #spinHint.is-hidden {
+
   opacity: 0;
+
   visibility: hidden;
+
   animation: none;
+
 }
 
 @keyframes handNudge {
+
   0%, 100% {
+
     transform: rotate(-42deg);
+
     filter:
+
       drop-shadow(0 0 3px #fff8d6)
+
       drop-shadow(0 0 8px #ffdf22)
+
       drop-shadow(0 0 15px rgba(255, 187, 0, 0.7));
+
   }
 
   50% {
+
     transform: rotate(-42deg) translate(-3px, -3px);
+
     filter:
+
       drop-shadow(0 0 5px #fff8d6)
+
       drop-shadow(0 0 13px #ffdf22)
+
       drop-shadow(0 0 24px rgba(255, 187, 0, 0.9));
+
   }
+
 }
 
 @keyframes spinPulse {
+
   0%, 100% {
+
     transform: translate(-50%, -50%) scale(1);
+
     filter: drop-shadow(0 0 5px #ffdf22);
+
   }
 
   50% {
+
     transform: translate(-50%, -50%) scale(1.08);
+
     filter: drop-shadow(0 0 17px #ffdf22) drop-shadow(0 0 26px #ffbb00);
+
   }
+
 }
 
 #spinBtn:disabled {
+
   animation: none;
+
   cursor: default;
+
   opacity: 1;
+
 }
 
 /* CHARACTERS */
 
 #girlMystery {
+
   z-index: 7;
+
   right: 0;
+
   bottom: -1%;
+
   width: 83%;
+
   height: auto;
+
   max-height: 100%;
+
   object-position: center bottom;
+
   filter: drop-shadow(0 0 15px #ffdc22);
+
   transition:
+
     opacity .35s,
+
     left .85s,
+
     right .85s,
+
     bottom .85s,
+
     width .85s,
+
     transform .85s;
+
 }
 
 #questionMark {
+
   z-index: 9;
+
   right: 7%;
+
   bottom: 12%;
+
   width: 19%;
+
   height: 15%;
+
   object-fit: contain;
+
   filter: drop-shadow(0 0 9px #ffdf22);
+
   animation: questionFloat 1.8s ease-in-out infinite;
+
   transition: opacity .3s;
+
 }
 
 @keyframes questionFloat {
+
   0%, 100% {
+
     transform: translateY(0) rotate(-2deg);
+
   }
 
   50% {
+
     transform: translateY(-8px) rotate(2deg);
+
   }
+
 }
 
 /* OVERLAY */
 
 #blurOverlay {
+
   position: absolute;
+
   inset: 0;
+
   z-index: 10;
+
   background: #0806003d;
+
   -webkit-backdrop-filter: blur(0);
+
   backdrop-filter: blur(0);
+
   opacity: 0;
+
   pointer-events: none;
+
   transition: opacity .45s, backdrop-filter .45s;
+
 }
 
 #characterReveal {
+
   z-index: 13;
+
   left: 50%;
+
   top: 60%;
+
   width: 100%;
+
   height: auto;
+
   max-height: 100%;
+
   object-fit: contain;
+
   object-position: center;
+
   transform: translate(-50%, -50%) scale(.92);
+
   opacity: 0;
+
   filter: drop-shadow(0 0 20px #ffdc22);
+
   transition:
+
     opacity .35s ease,
+
     transform .72s cubic-bezier(.17,.84,.44,1),
+
     left .85s,
+
     top .85s,
+
     width .85s,
+
     filter .3s;
+
 }
 
 #revealAura,
+
 #revealParticles {
+
   position: absolute;
+
   left: 50%;
+
   top: 60%;
+
   width: 100%;
+
   height: 100%;
+
   transform: translate(-50%, -50%);
+
   pointer-events: none;
+
   z-index: 12;
+
 }
 
 #revealAura {
+
   background: radial-gradient(circle, rgba(255, 242, 164, 0.96) 0%, rgba(255, 209, 62, 0.7) 22%, rgba(255, 166, 0, 0.25) 40%, transparent 68%);
+
   filter: blur(6px);
+
   opacity: 0;
+
   transform: translate(-50%, -50%) scale(.9);
+
   transition: opacity .2s ease, transform .7s cubic-bezier(.17,.84,.44,1);
+
 }
 
 #revealParticles {
+
   overflow: visible;
+
   filter: drop-shadow(0 0 12px rgba(255, 210, 65, 0.9));
+
   opacity: 0;
+
 }
 
 .reveal-particle {
+
   position: absolute;
+
   left: 50%;
+
   top: 50%;
+
   width: var(--size);
+
   height: var(--size);
+
   border-radius: 50%;
+
   background: radial-gradient(circle, #fffde1 0%, #ffe48f 18%, #ffbb22 52%, rgba(165, 104, 0, 0.85) 100%);
+
   box-shadow: 0 0 12px rgba(255, 222, 110, 0.92), 0 0 18px rgba(255, 177, 31, 0.88);
+
   opacity: 0;
+
   animation: revealParticleBurst 860ms ease-out forwards;
+
 }
 
 @keyframes revealParticleBurst {
+
   0% {
+
     opacity: 0;
+
     transform: translate(-50%, -50%) scale(0.3);
+
   }
 
   16% {
+
     opacity: 1;
+
   }
 
   100% {
+
     opacity: 0;
+
     transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.25);
+
   }
+
 }
 
 @keyframes revealFlash {
+
   0% {
+
     opacity: 0;
+
     transform: translate(-50%, -50%) scale(.88);
+
   }
 
   18% {
+
     opacity: 0.96;
+
     transform: translate(-50%, -50%) scale(1.03);
+
   }
 
   45% {
+
     opacity: 0.7;
+
     transform: translate(-50%, -50%) scale(1.1);
+
   }
 
   100% {
+
     opacity: 0;
+
     transform: translate(-50%, -50%) scale(1.18);
+
   }
+
 }
 
 #game.show-character #revealAura {
+
   opacity: 1;
+
   transform: translate(-50%, -50%) scale(1.06);
+
 }
 
 #game.show-character #revealParticles {
+
   opacity: 1;
+
 }
 
 #game.show-character #characterReveal {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1.03);
-  animation: characterRevealPop 720ms cubic-bezier(.16,.82,.26,1);
+
+  transform-origin: 50% 88%;
+
+  animation:
+    characterRevealPop 720ms cubic-bezier(.16,.82,.26,1),
+    revealGirlIdle 3.1s ease-in-out 720ms infinite;
+
+  will-change: transform, filter;
+
+}
+/* Gentle breathing and a tiny lift instead of a jump. */
+@keyframes revealGirlIdle {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1.03);
+    filter: drop-shadow(0 0 18px #ffdc22);
+  }
+  50% {
+    transform: translate(-50%, calc(-50% - .7%)) scale(1.035);
+    filter: drop-shadow(0 0 24px #ffdf54);
+  }
+}
+
+@keyframes finalGirlIdle {
+  0%, 100% { transform: translate(-50%, -50%) scale(1.04) rotate(0deg); filter: drop-shadow(0 0 20px #ffdc22) brightness(1); }
+  28% { transform: translate(calc(-50% - .4%), calc(-50% - .35%)) scale(1.055) rotate(-.55deg); filter: drop-shadow(0 0 27px #ffe66b) brightness(1.035); }
+  55% { transform: translate(-50%, calc(-50% - .75%)) scale(1.065) rotate(.25deg); filter: drop-shadow(0 0 22px #ffdc22) brightness(1.015); }
+  82% { transform: translate(calc(-50% + .35%), calc(-50% - .2%)) scale(1.045) rotate(.45deg); filter: drop-shadow(0 0 28px #ffe66b) brightness(1.03); }
 }
 
 @keyframes characterRevealPop {
+
   0% {
+
     transform: translate(-50%, -50%) scale(.92);
+
   }
 
   32% {
+
     transform: translate(-50%, -50%) scale(1.025);
+
   }
 
   58% {
+
     transform: translate(-50%, -50%) scale(1.012);
+
   }
 
   82% {
+
     transform: translate(-50%, -50%) scale(1.002);
+
   }
 
   100% {
+
     transform: translate(-50%, -50%) scale(1);
+
   }
+
 }
 
 #speech {
+
   position: absolute;
+
   z-index: 15;
+
   left: 15%;
+
   top: 56%;
+
   width: 55%;
+
   height: auto;
+
   object-fit: contain;
+
   opacity: 0;
+
   transform: translateY(18px) scale(.78);
+
   transition: opacity .5s ease, transform .8s cubic-bezier(.17,.84,.44,1), filter .5s ease;
+
   filter: blur(2px);
+
   pointer-events: none;
+
 }
 
 #speech:before {
+
   content: "";
+
   position: absolute;
+
   inset: 0;
+
   border-radius: 18px;
+
   box-shadow: 0 0 0 1px rgba(255, 205, 72, 0.15);
+
 }
 
 @keyframes bubbleIntro {
+
   0% {
+
     opacity: 0;
+
     transform: translateY(18px) scale(.78);
+
     filter: blur(2px);
+
   }
 
   35% {
+
     opacity: 0.7;
+
     transform: translateY(4px) scale(.94);
+
     filter: blur(1px);
+
   }
 
   100% {
+
     opacity: 1;
+
     transform: translateY(0) scale(1);
+
     filter: blur(0);
+
   }
+
 }
 
 #game:not(.show-speech) #speech {
+
   opacity: 0;
+
   transform: translateY(18px) scale(.78);
+
   filter: blur(2px);
+
 }
 
 #game.show-speech #speech {
+
   opacity: 1;
+
   transform: translateY(0) scale(1);
+
   filter: blur(0);
+
   animation: bubbleIntro 620ms cubic-bezier(.18,.89,.32,1.1);
+
 }
 
 #game.show-speech #speech::after {
+
   content: "";
+
   position: absolute;
+
   inset: -12% -15%;
+
   border-radius: 28%;
+
   background: radial-gradient(circle, rgba(255, 228, 125, 0.42) 0%, rgba(255, 201, 66, 0.18) 35%, transparent 72%);
+
   z-index: -1;
+
   opacity: 0.9;
+
   animation: bubbleGlow 850ms ease-out;
+
 }
 
 @keyframes bubbleGlow {
+
   0% {
+
     opacity: 0;
+
     transform: scale(.82);
+
   }
 
   28% {
+
     opacity: 0.9;
+
     transform: scale(1.06);
+
   }
 
   100% {
+
     opacity: 0;
+
     transform: scale(1.2);
+
   }
+
 }
 
 /* REWARD AND CTA */
 
 #reward {
+
   position: absolute;
+
   z-index: 18;
+
   left: 50%;
+
   top: 4%;
+
   width: 100%;
+
   height: auto;
+
   padding: 0;
+
   transform: translate(-50%, -15px) scale(.75);
+
   border: 0;
+
   background: transparent;
+
   opacity: 0;
+
   pointer-events: none;
+
   transition: opacity .4s, transform .4s;
+
   cursor: pointer;
+
   animation: rewardPulse 1.6s ease-in-out infinite;
+
 }
 
 #reward img {
+
   display: block;
+
   width: 100%;
+
   height: auto;
+
   object-fit: contain;
+
 }
 
 @keyframes rewardPulse {
+
   0%, 100% {
+
     transform: translate(-50%, -15px) scale(.75);
+
   }
 
   50% {
+
     transform: translate(-50%, -15px) scale(.82);
+
   }
+
 }
 
 /* SOUND */
 
 #soundBtn {
+
   position: absolute;
+
   z-index: 25;
+
   top: 1.5%;
+
   right: 2.5%;
+
   width: 8%;
+
   height: 4.5%;
+
   min-width: 28px;
+
   min-height: 28px;
+
   border: 0;
+
   background: transparent;
+
   padding: 0;
+
   display: grid;
+
   place-items: center;
+
   cursor: pointer;
+
   filter: drop-shadow(0 0 5px #ffdf22);
+
   touch-action: manipulation;
+
 }
 
 #soundBtn span {
+
   display: block;
+
   font-size: clamp(16px, 4vw, 28px);
+
   line-height: 1;
+
   color: #ffdf22;
+
   text-shadow: 0 0 8px #ffdf22;
+
 }
 
 /* REVEAL SCENE */
 
 #game.scene-reveal #headline,
+
 #game.scene-reveal #topIcons {
+
   opacity: 1;
+
 }
 
 #game.scene-reveal #wheelWrap {
+
   filter: blur(2.5px);
+
 }
 
 #game.scene-reveal #wheelGlow {
+
   box-shadow:
+
     0 0 20px rgba(255, 222, 103, 0.42),
+
     0 0 38px rgba(255, 187, 54, 0.24),
+
     inset 0 0 26px rgba(255, 213, 109, 0.23);
+
 }
 
 #game.scene-reveal #girlMystery,
+
 #game.scene-reveal #questionMark {
+
   opacity: 0;
+
 }
 
 #game.scene-reveal #blurOverlay,
+
 #game.scene-final #blurOverlay {
+
   opacity: 1;
+
   -webkit-backdrop-filter: blur(2.5px);
+
   backdrop-filter: blur(2.5px);
+
 }
 
 #game.show-character #characterReveal {
+
   cursor: pointer;
+
 }
 
 #game.show-character #bgImage,
+
 #game.show-character #ambient {
+
   transform: scale(1.025) translate3d(0, 2px, 0);
+
 }
 
 #game.scene-final #characterReveal {
+
   cursor: pointer;
+
 }
 
 #game.show-speech #speech {
+
   opacity: 1;
+
   transform: translateY(0) scale(1);
+
 }
 
 /* SECOND SCENE */
 
 #game.scene-two #headline {
+
   top: 5%;
+
   height: 15%;
+
 }
 
 #game.scene-two #title1 {
+
   display: none;
+
 }
 
 #game.scene-two #title2 {
+
   top: 0;
+
   left: 9%;
+
   width: 82%;
+
   height: auto;
+
 }
 
 #game.scene-two #title3 {
+
   top: 55%;
+
   left: 10%;
+
   width: 78%;
+
   height: auto;
+
   filter: drop-shadow(0 0 8px #ffdf22);
+
 }
 
 #game.scene-two #topIcons {
+
   opacity: 0;
+
   transform: translateY(-16px);
+
   pointer-events: none;
+
 }
 
 #game.scene-two #girlMystery,
+
 #game.scene-two #questionMark {
+
   opacity: 0;
+
 }
 
 #game.scene-two #characterReveal {
+
   left: 70%;
+
   top: 84.5%;
+
   width: 80%;
+
   height: auto;
+
   opacity: 1;
+
   transform: translate(-50%, -50%) scale(1);
+
   z-index: 7;
+
 }
 
 #game.scene-two #wheelWrap {
+
   left: 50%;
+
   top: 48%;
+
   width: 88%;
+
   transform: translate(-50%, -50%);
+
   filter: none !important;
+
   z-index: 14;
+
 }
 
 #game.scene-two #blurOverlay {
+
   opacity: 0 !important;
+
   -webkit-backdrop-filter: none !important;
+
   backdrop-filter: none !important;
+
 }
 
 /* FINAL SCENE */
 
 #game.scene-final #headline,
+
 #game.scene-final #topIcons {
+
   opacity: 0;
+
   pointer-events: none;
+
 }
 
 #game.scene-final #wheelWrap {
+
   transform: scale(.94);
+
 }
 
 #game.scene-final #girlMystery,
+
 #game.scene-final #questionMark {
+
   opacity: 0;
+
 }
 
 #game.scene-final #characterReveal {
+
   left: 50%;
+
   top: 60%;
+
   width: 100%;
+
   height: auto;
+
   opacity: 1;
+
   transform: translate(-50%, -50%) scale(1.04);
+
+  transform-origin: 50% 88%;
+
+  animation: finalGirlIdle 3.2s ease-in-out infinite;
+
+  will-change: transform, filter;
+
 }
 
 #game.scene-final #speech {
+
   top: 60%;
+
   left: 13%;
+
   width: 54%;
+
   height: auto;
+
 }
 
 #game.scene-final #reward {
+
   opacity: 1;
+
   transform: translate(-50%, 0) scale(1);
+
   pointer-events: auto;
+
 }
 
 #game.scene-final #spinBtn {
+
   opacity: 0;
+
   pointer-events: none;
+
 }
 
 /* SMALL SCREENS */
 
 @media (max-height: 650px) {
+
   #wheelWrap {
+
     top: 30%;
+
   }
 
   #girlMystery {
+
     width: auto;
+
     height: 45%;
+
     max-width: 100%;
+
   }
 
   #speech {
+
     top: 22%;
+
   }
 
   #game.scene-two #wheelWrap {
+
     top: 48%;
+
   }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
+  #game.show-character #characterReveal,
+  #game.scene-final #characterReveal { animation: none; }
+
   #questionMark,
+
   #spinBtn,
+
   #spinHint {
+
     animation-duration: 2.5s;
+
   }
+
 }
+
 </style>
+
 </head>
 
 <body translate="no" class="notranslate">
+
 <main id="game" aria-label="Mystery Wheel playable ad">
 
   <img
+
     id="bgImage"
+
     src="assets/background.webp"
+
     alt=""
+
     draggable="false"
+
   >
 
   <div id="bgDust" aria-hidden="true"></div>
 
   <div id="headline">
+
     <img class="asset" id="title1" src="assets/title-1.webp" alt="" draggable="false">
+
     <img class="asset" id="title2" src="assets/title-2.webp" alt="" draggable="false">
+
     <img class="asset" id="title3" src="assets/title-3.webp" alt="" draggable="false">
+
   </div>
 
   <div id="topIcons">
+
     <img class="top-icon" id="icon1" src="assets/icon-1.webp" alt="" draggable="false">
+
     <img class="top-icon" id="icon2" src="assets/icon-2.webp" alt="" draggable="false">
+
   </div>
 
   <section id="wheelWrap" aria-label="Prize wheel">
+
     <div id="wheelGlow"></div>
 
     <div id="wheelEffects" aria-hidden="true">
+
       <div id="wheelRimShimmer"></div>
+
       <div id="wheelParticles"></div>
+
       <div id="wheelStopFlash"></div>
+
     </div>
 
     <img
+
       id="wheelImage"
+
       src="assets/wheel-1.webp"
+
       alt=""
+
       draggable="false"
+
     >
 
     <img
+
       class="asset"
+
       id="pointer"
+
       src="assets/pointer.webp"
+
       alt=""
+
       draggable="false"
+
     >
 
     <button id="spinBtn" type="button" aria-label="Spin the wheel">
+
       <img src="assets/spin.webp" alt="" draggable="false">
+
     </button>
+
     <img id="spinHint" src="assets/hand.webp" alt="" aria-hidden="true" draggable="false">
+
   </section>
 
   <img
+
     class="asset"
+
     id="girlMystery"
+
     src="assets/girl-mystery.webp"
+
     alt=""
+
     draggable="false"
+
   >
 
   <img
+
     class="asset"
+
     id="questionMark"
+
     src="assets/question.webp"
+
     alt=""
+
     draggable="false"
+
   >
 
   <div id="blurOverlay"></div>
 
   <div id="revealAura" aria-hidden="true"></div>
+
   <div id="revealParticles" aria-hidden="true"></div>
 
   <img
+
     class="asset"
+
     id="characterReveal"
-    src="assets/girl-reveal.webp"
+
+    src="assets/girl-reveal-closed.webp"
+
     alt=""
+
     draggable="false"
+
   >
 
   <img
+
     id="speech"
+
     src="assets/bubble-1.webp"
+
     alt=""
+
     draggable="false"
+
   >
 
   <button id="reward" type="button" aria-label="Open reward website">
+
     <img src="assets/reward.webp" alt="" draggable="false">
+
   </button>
 
   <button
+
     id="soundBtn"
+
     type="button"
+
     aria-label="Mute sound"
+
     aria-pressed="false"
+
   >
+
     <span aria-hidden="true">🔊</span>
+
   </button>
 
   <div id="ambient"></div>
+
 </main>
 
 <script>
+
 (() => {
+
   'use strict';
 
   /* CONFIGURATION */
 
   const CONFIG = {
+
     ctaUrl: 'https://honeytoon.com/comic/climb-me-hard/1',
 
+    revealFrameDelay: 180,
+
+
     firstRevealDelay: 2100,
+
     characterDelay: 220,
+
     firstBubbleDelay: 700,
+
     secondBubbleDelay: 4000,
+
+    secondBubblePause: 550,
+
     sceneTwoDelayAfterBubble: 2600,
     finalRedirectDelay: 1200,
 
     spinDurationFirst: 4600,
+
     spinDurationSecond: 5000,
 
     continuousSpeed: 0.42,
 
     music: 'assets/music.mp3',
+
     spinSound: 'assets/spin.mp3',
+
     wowSound: 'assets/wow.mp3',
 
     sceneTwoTitle2: 'assets/title-2-stage2.webp',
+
     sceneTwoTitle3: 'assets/title-3-stage2.webp',
 
     bubbleOne: 'assets/bubble-1.webp',
+
     bubbleTwo: 'assets/bubble-2.webp',
+
     finalBubble: 'assets/bubble-final.webp',
 
     wheelOne: 'assets/wheel-1.webp',
+
     wheelTwo: 'assets/wheel-2.webp',
 
-    characterFirst: 'assets/girl-reveal.webp',
+    characterFirst: 'assets/girl-reveal-open.webp',
+
     characterFinal: 'assets/girl-final.webp',
 
     fadeDuration: 600
+
   };
 
   const $ = id => document.getElementById(id);
 
   const game = $('game');
+
   const bgDust = $('bgDust');
+
   const wheel = $('wheelImage');
+
   const wheelEffects = $('wheelEffects');
+
   const wheelRimShimmer = $('wheelRimShimmer');
+
   const wheelParticles = $('wheelParticles');
+
   const wheelStopFlash = $('wheelStopFlash');
+
   const spinBtn = $('spinBtn');
+
   const spinHint = $('spinHint');
+
   const girl = $('girlMystery');
+
   const question = $('questionMark');
+
   const reveal = $('characterReveal');
+
   const revealAura = $('revealAura');
+
   const revealParticles = $('revealParticles');
+
   const speech = $('speech');
+
   const soundBtn = $('soundBtn');
+
   const soundGlyph = soundBtn.querySelector('span');
 
   let fitRaf = 0;
 
   function fitGame() {
+
     const vv = window.visualViewport;
+
     const vw = Math.round(vv ? vv.width : window.innerWidth);
+
     const vh = Math.round(vv ? vv.height : window.innerHeight);
 
     if (!vw || !vh) return;
 
     let w = vw;
+
     let h = w * 16 / 9;
 
     if (h > vh) {
+
       h = vh;
+
       w = h * 9 / 16;
+
     }
 
     game.style.width = Math.floor(w) + 'px';
+
     game.style.height = Math.floor(h) + 'px';
+
   }
 
   function scheduleFit() {
+
     if (fitRaf) cancelAnimationFrame(fitRaf);
 
     fitRaf = requestAnimationFrame(() => {
+
       fitRaf = 0;
+
       fitGame();
+
     });
+
   }
 
   fitGame();
 
   window.addEventListener('resize', scheduleFit);
+
   window.addEventListener('orientationchange', () => {
+
     scheduleFit();
+
     setTimeout(fitGame, 250);
+
   });
 
   if (window.visualViewport) {
+
     window.visualViewport.addEventListener('resize', scheduleFit);
+
   }
 
   setTimeout(fitGame, 300);
+
   setTimeout(fitGame, 1200);
 
   const START_ANGLE = 0;
 
   let rotation = START_ANGLE;
+
   let spinning = false;
+
   let spinCount = 0;
+
   let audioEnabled = true;
+
   let audioStarted = false;
 
   let music = null;
+
   let spinAudio = null;
+
   let wowAudio = null;
 
   /* CENTRALIZED ANIMATION CONTROL */
 
   let wheelAnimationId = 0;
+
   let wheelAnimationMode = 'idle';
+
   let wheelAnimationGeneration = 0;
+
   let fadeGeneration = 0;
+
   let spinParticlesTimer = null;
 
   /* TIMER CONTROL */
@@ -1253,384 +2154,662 @@ button {
   const timers = new Set();
 
   function managedTimeout(callback, delay) {
+
     let id;
 
     id = setTimeout(() => {
+
       timers.delete(id);
+
       callback();
+
     }, delay);
 
     timers.add(id);
+
     return id;
+
   }
 
   function clearManagedTimers() {
+
     for (const id of timers) {
+
       clearTimeout(id);
+
     }
 
     timers.clear();
+
   }
 
   /* AUDIO INITIALIZATION */
 
   function makeAudio(src, loop, volume) {
+
     const audio = new Audio(src);
 
     audio.loop = !!loop;
+
     audio.volume = volume;
+
     audio.preload = 'auto';
 
     audio.addEventListener('error', () => {
+
       console.warn('[Playable] Audio unavailable:', src);
+
     });
 
     return audio;
+
   }
 
   try {
+
     music = makeAudio(CONFIG.music, true, 0.35);
+
     spinAudio = makeAudio(CONFIG.spinSound, true, 0.8);
+
     wowAudio = makeAudio(CONFIG.wowSound, false, 1);
+
   } catch (error) {
+
     console.warn('[Playable] Audio initialization failed:', error);
+
   }
 
   function safePlay(audio, restart = false) {
+
     if (!audio || !audioEnabled) return;
 
     try {
+
       if (restart) {
+
         audio.currentTime = 0;
+
       }
 
       const promise = audio.play();
 
       if (promise && typeof promise.catch === 'function') {
+
         promise.catch(error => {
+
           console.warn('[Playable] Audio playback blocked:', error);
+
         });
+
       }
+
     } catch (error) {
+
       console.warn('[Playable] Audio playback failed:', error);
+
     }
+
   }
 
   function startAudio() {
+
     if (audioStarted) return;
 
     audioStarted = true;
+
     safePlay(music);
+
   }
 
   function pauseAudio(audio) {
+
     if (!audio) return;
 
     try {
+
       audio.pause();
+
     } catch (error) {
+
       console.warn('[Playable] Audio pause failed:', error);
+
     }
+
   }
 
   function stopAudio(audio) {
+
     if (!audio) return;
 
     try {
+
       audio.pause();
+
       audio.currentTime = 0;
+
     } catch (error) {
+
       console.warn('[Playable] Audio reset failed:', error);
+
     }
+
   }
 
   /* SPIN AUDIO */
 
   function stopSpinAudio() {
+
     fadeGeneration++;
+
     stopAudio(spinAudio);
 
     if (spinAudio) {
+
       spinAudio.volume = 0.8;
+
       spinAudio.playbackRate = 1;
+
     }
+
   }
 
   function syncSpinAudioToDeceleration(progress) {
+
     if (!spinAudio) return;
 
     const t = Math.max(0, Math.min(1, progress));
+
     spinAudio.volume = Math.max(0.03, 0.8 * (1 - Math.pow(t, 2.4)));
+
     spinAudio.playbackRate = 1.12 - t * 0.9;
+
   }
 
   function fadeOutSpinAudio() {
+
     if (!spinAudio || spinAudio.paused) return;
 
     const generation = ++fadeGeneration;
+
     const startVolume = spinAudio.volume;
+
     const startAt = performance.now();
+
     const duration = Math.max(180, CONFIG.fadeDuration * 0.35);
 
     function tick(now) {
+
       if (generation !== fadeGeneration) return;
 
       const t = Math.min(1, (now - startAt) / duration);
+
       const ease = 1 - Math.pow(1 - t, 3.2);
 
       spinAudio.volume = Math.max(
+
         0,
+
         startVolume * (1 - ease)
+
       );
+
       spinAudio.playbackRate = Math.max(0.45, 1 - t * 0.7);
 
       if (t < 1) {
+
         requestAnimationFrame(tick);
+
       } else {
+
         stopAudio(spinAudio);
+
         spinAudio.volume = 0.8;
+
         spinAudio.playbackRate = 1;
+
       }
+
     }
 
     requestAnimationFrame(tick);
+
   }
 
   /* WHEEL ANIMATION */
 
   function cancelWheelAnimation() {
+
     const wasAnimating = wheelAnimationMode !== 'idle';
 
     wheelAnimationGeneration++;
 
     if (wheelAnimationId) {
+
       cancelAnimationFrame(wheelAnimationId);
+
     }
 
     wheelAnimationId = 0;
+
     wheelAnimationMode = 'idle';
 
     if (wasAnimating) {
+
       fadeOutSpinAudio();
+
     }
+
   }
 
   function applyWheelRotation() {
+
     wheel.style.transform = `rotate(${rotation}deg)`;
+
     wheelEffects.style.transform = `rotate(${rotation}deg)`;
+
   }
 
   function spawnWheelParticles(count = 4) {
+
     for (let i = 0; i < count; i++) {
+
       const particle = document.createElement('span');
+
       const angle = Math.random() * Math.PI * 2;
+
       const radius = 18 + Math.random() * 34;
+
       const dx = Math.cos(angle) * (22 + Math.random() * 64);
+
       const dy = Math.sin(angle) * (22 + Math.random() * 64);
+
       const size = 3 + Math.random() * 7;
 
       particle.className = 'wheel-particle';
+
       particle.style.setProperty('--dx', `${dx}px`);
+
       particle.style.setProperty('--dy', `${dy}px`);
+
       particle.style.setProperty('--size', `${size}px`);
+
       particle.style.left = `${50 + Math.cos(angle) * radius}%`;
+
       particle.style.top = `${50 + Math.sin(angle) * radius}%`;
+
       particle.style.animationDuration = `${520 + Math.random() * 800}ms`;
+
       particle.style.opacity = '0';
 
       wheelParticles.appendChild(particle);
+
       particle.addEventListener('animationend', () => particle.remove(), { once: true });
+
     }
+
   }
 
   function startSpinParticles() {
+
     stopSpinParticles();
 
     spinParticlesTimer = setInterval(() => {
+
       spawnWheelParticles(4 + Math.floor(Math.random() * 3));
+
     }, 75);
+
   }
 
   function stopSpinParticles() {
+
     if (spinParticlesTimer) {
+
       clearInterval(spinParticlesTimer);
+
       spinParticlesTimer = null;
+
     }
+
   }
 
   function triggerStopFlash() {
+
     wheelStopFlash.classList.remove('is-flashing');
+
     void wheelStopFlash.offsetWidth;
+
     wheelStopFlash.classList.add('is-flashing');
+
   }
 
   function startContinuousSpin() {
+
     cancelWheelAnimation();
+
     startSpinParticles();
+
     wheelRimShimmer.style.opacity = '1';
 
     const generation = wheelAnimationGeneration;
+
     wheelAnimationMode = 'continuous';
 
     let lastFrame = 0;
 
     function frame(now) {
+
       if (
+
         generation !== wheelAnimationGeneration ||
+
         wheelAnimationMode !== 'continuous'
+
       ) {
+
         return;
+
       }
 
       if (lastFrame) {
+
         const deltaTime = Math.min(now - lastFrame, 50);
 
         rotation += deltaTime * CONFIG.continuousSpeed;
+
         applyWheelRotation();
+
       }
 
       lastFrame = now;
+
       wheelAnimationId = requestAnimationFrame(frame);
+
     }
 
     wheelAnimationId = requestAnimationFrame(frame);
+
   }
 
   function rotateWheelByTurns(turns, duration, done) {
+
     cancelWheelAnimation();
 
     const generation = wheelAnimationGeneration;
+
     wheelAnimationMode = 'decelerating';
 
     const startAngle = rotation;
+
     const deltaAngle = 360 * Math.max(1, Math.round(turns));
+
     const finishAngle = startAngle + deltaAngle;
+
     const startAt = performance.now();
 
     function frame(now) {
+
       if (
+
         generation !== wheelAnimationGeneration ||
+
         wheelAnimationMode !== 'decelerating'
+
       ) {
+
         return;
+
       }
 
       const t = Math.min(1, (now - startAt) / duration);
+
       const ease = 1 - Math.pow(1 - t, 4);
 
       syncSpinAudioToDeceleration(t);
+
       rotation = startAngle + deltaAngle * ease;
+
       applyWheelRotation();
 
       if (t < 1) {
+
         wheelAnimationId = requestAnimationFrame(frame);
+
         return;
+
       }
 
       rotation = finishAngle;
+
       applyWheelRotation();
 
       wheelAnimationId = 0;
+
       wheelAnimationMode = 'idle';
+
       stopSpinParticles();
+
       wheelRimShimmer.style.opacity = '0';
+
       triggerStopFlash();
+
       fadeOutSpinAudio();
 
       if (typeof done === 'function') {
+
         done();
+
       }
+
     }
 
     wheelAnimationId = requestAnimationFrame(frame);
+
   }
 
   function resetWheelToStart() {
+
     cancelWheelAnimation();
+
     stopSpinParticles();
+
     wheelRimShimmer.style.opacity = '0';
 
     rotation = START_ANGLE;
+
     applyWheelRotation();
+
   }
 
   /* ASSET HELPERS */
 
   function setWheel(src) {
+
     wheel.src = src;
+
   }
 
   function setBubble(src) {
+
     speech.src = src;
+
   }
 
+  let revealTalkTimer = null;
+
   function showBubble(src) {
+
     setBubble(src);
 
     if (game.classList.contains('show-speech')) {
+
       game.classList.remove('show-speech');
+
       void game.offsetWidth;
+
     }
 
     game.classList.add('show-speech');
+
     speech.style.animation = 'none';
+
     void speech.offsetWidth;
+
     speech.style.animation = 'bubbleIntro 480ms cubic-bezier(.18,.89,.32,1.1)';
+
+    if (game.classList.contains('show-character') && game.classList.contains('scene-reveal')) {
+
+      startRevealTalkLoop();
+
+    }
+
   }
 
   function setCharacter(src) {
+
     reveal.src = src;
+
+  }
+
+  function setCharacterTalkingState(isOpen) {
+
+    const nextSrc = isOpen ? 'assets/girl-reveal-open.webp' : 'assets/girl-reveal-closed.webp';
+
+    reveal.src = nextSrc;
+
+  }
+
+  function stopRevealTalkLoop() {
+
+    if (revealTalkTimer) {
+
+      clearTimeout(revealTalkTimer);
+
+      revealTalkTimer = null;
+
+    }
+
+    setCharacterTalkingState(false);
+
+  }
+
+  function startRevealTalkLoop() {
+
+    if (!game.classList.contains('show-character') || isFinalScene()) {
+
+      return;
+
+    }
+
+    if (revealTalkTimer) {
+
+      clearTimeout(revealTalkTimer);
+
+    }
+
+    let mouthOpen = false;
+
+    const cycle = () => {
+
+      if (!game.classList.contains('show-character') || !game.classList.contains('show-speech') || isFinalScene()) {
+
+        stopRevealTalkLoop();
+
+        return;
+
+      }
+
+      mouthOpen = !mouthOpen;
+      setCharacterTalkingState(mouthOpen);
+      revealTalkTimer = managedTimeout(cycle, CONFIG.revealFrameDelay);
+
+    };
+
+    setCharacterTalkingState(false);
+    revealTalkTimer = managedTimeout(cycle, CONFIG.revealFrameDelay);
+
   }
 
   function triggerRevealParticles() {
+
     revealParticles.innerHTML = '';
 
     for (let i = 0; i < 18; i++) {
+
       const particle = document.createElement('span');
+
       const angle = (Math.PI * 2 * i) / 18 + Math.random() * 0.45;
+
       const distance = 24 + Math.random() * 88;
+
       const dx = Math.cos(angle) * distance;
+
       const dy = Math.sin(angle) * distance * 0.9;
+
       const size = 4 + Math.random() * 8;
 
       particle.className = 'reveal-particle';
+
       particle.style.setProperty('--dx', `${dx}px`);
+
       particle.style.setProperty('--dy', `${dy}px`);
+
       particle.style.setProperty('--size', `${size}px`);
+
       particle.style.left = '50%';
+
       particle.style.top = '50%';
+
       particle.style.opacity = '0';
 
       revealParticles.appendChild(particle);
+
     }
 
     revealAura.style.animation = 'none';
+
     void revealAura.offsetWidth;
+
     revealAura.style.animation = 'revealFlash 600ms ease-out';
+
   }
 
   function createDustParticles() {
+
     if (!bgDust) return;
 
     bgDust.innerHTML = '';
 
     for (let i = 0; i < 18; i++) {
+
       const dot = document.createElement('span');
+
       const size = 2 + Math.random() * 5;
+
       const x = Math.random() * 100;
+
       const y = Math.random() * 100;
+
       const delay = Math.random() * 5;
+
       const duration = 6 + Math.random() * 12;
 
       dot.className = 'bg-dust-particle';
+
       dot.style.setProperty('--size', `${size}px`);
+
       dot.style.left = `${x}%`;
+
       dot.style.top = `${y}%`;
+
       dot.style.animationDelay = `${delay}s`;
+
       dot.style.animationDuration = `${duration}s`;
 
       bgDust.appendChild(dot);
+
     }
+
   }
 
   createDustParticles();
@@ -1638,127 +2817,184 @@ button {
   /* SCENE STATE */
 
   function isFinalScene() {
+
     return game.classList.contains('scene-final');
+
   }
 
   function enterFinalScene() {
+
     clearManagedTimers();
+
     cancelWheelAnimation();
+
     stopSpinAudio();
 
     spinning = false;
 
+    stopRevealTalkLoop();
+
     game.classList.remove(
+
       'scene-two',
+
       'scene-reveal',
+
       'show-character',
+
       'show-speech'
+
     );
 
     game.classList.add('scene-final');
 
     setCharacter(CONFIG.characterFinal);
+
     showBubble(CONFIG.finalBubble);
 
     reveal.style.opacity = '';
+
     speech.style.opacity = '';
+
     speech.style.transform = '';
+
     speech.style.filter = '';
+
     speech.style.animation = '';
 
     safePlay(wowAudio, true);
 
     managedTimeout(openSite, CONFIG.finalRedirectDelay);
+
   }
 
   /* FIRST REVEAL */
 
   function startFirstReveal() {
+
     if (spinCount !== 1 || isFinalScene()) return;
 
     game.classList.add('scene-reveal');
 
     girl.style.opacity = '0';
+
     question.style.opacity = '0';
 
-    setCharacter(CONFIG.characterFirst);
+    setCharacter('assets/girl-reveal-closed.webp');
 
     managedTimeout(() => {
+
       if (isFinalScene()) return;
 
+      setCharacter('assets/girl-reveal-closed.webp');
       fadeOutSpinAudio();
       game.classList.add('show-character');
       triggerRevealParticles();
+
     }, CONFIG.characterDelay);
 
     managedTimeout(() => {
+
       if (isFinalScene()) return;
 
       showBubble(CONFIG.bubbleOne);
+
     }, CONFIG.firstBubbleDelay);
 
     managedTimeout(() => {
+
       if (isFinalScene()) return;
 
       showBubble(CONFIG.bubbleTwo);
-    }, CONFIG.firstBubbleDelay + CONFIG.secondBubbleDelay);
+
+    }, CONFIG.firstBubbleDelay + CONFIG.secondBubbleDelay + CONFIG.secondBubblePause);
 
     const total =
+
       CONFIG.firstBubbleDelay +
+
       CONFIG.secondBubbleDelay +
+
+      CONFIG.secondBubblePause +
+
       CONFIG.sceneTwoDelayAfterBubble;
 
     managedTimeout(() => {
+
       if (spinCount !== 1 || isFinalScene()) return;
 
       cancelWheelAnimation();
+
       stopSpinParticles();
+
       stopSpinAudio();
 
       spinning = false;
 
+      stopRevealTalkLoop();
+
       game.classList.remove(
+
         'scene-reveal',
+
         'show-character',
+
         'show-speech'
+
       );
 
       game.classList.add('scene-two');
 
       resetWheelToStart();
+
       spinHint.classList.remove('is-hidden');
 
       $('title2').src = CONFIG.sceneTwoTitle2;
+
       $('title3').src = CONFIG.sceneTwoTitle3;
 
       setWheel(CONFIG.wheelTwo);
 
       reveal.style.opacity = '';
+
       speech.style.opacity = '';
+
       speech.style.transform = '';
 
       girl.style.opacity = '0';
+
       question.style.opacity = '0';
 
       spinBtn.disabled = false;
+
     }, total);
+
   }
 
   /* SPIN BUTTON */
 
   function beginSpin() {
+
     if (
+
       spinning ||
+
       spinBtn.disabled ||
+
       spinCount >= 2 ||
+
       isFinalScene()
+
     ) {
+
       return;
+
     }
 
     startAudio();
 
     spinning = true;
+
     spinCount++;
 
     spinBtn.disabled = true;
@@ -1766,72 +3002,107 @@ button {
     safePlay(spinAudio, true);
 
     if (spinCount === 1) {
+
       startContinuousSpin();
 
       managedTimeout(() => {
+
         startFirstReveal();
+
       }, CONFIG.firstRevealDelay);
 
       return;
+
     }
 
     const turns = 5 + Math.floor(Math.random() * 3);
 
     rotateWheelByTurns(
+
       turns,
+
       CONFIG.spinDurationSecond,
+
       () => {
+
         if (isFinalScene()) return;
 
         spinning = false;
+
         fadeOutSpinAudio();
+
         enterFinalScene();
+
       }
+
     );
+
   }
 
   spinBtn.addEventListener('click', () => {
+
     spinHint.classList.add('is-hidden');
+
     beginSpin();
+
   });
 
   /* SOUND BUTTON */
 
   function updateSoundButton() {
+
     soundGlyph.textContent = audioEnabled ? '🔊' : '🔇';
 
     soundBtn.setAttribute(
+
       'aria-label',
+
       audioEnabled ? 'Mute sound' : 'Enable sound'
+
     );
 
     soundBtn.setAttribute(
+
       'aria-pressed',
+
       String(!audioEnabled)
+
     );
+
   }
 
   soundBtn.addEventListener('click', () => {
+
     audioEnabled = !audioEnabled;
 
     updateSoundButton();
 
     if (!audioEnabled) {
+
       pauseAudio(music);
+
       pauseAudio(spinAudio);
+
       pauseAudio(wowAudio);
 
       fadeGeneration++;
+
       return;
+
     }
 
     if (audioStarted) {
+
       safePlay(music);
 
       if (spinning) {
+
         safePlay(spinAudio);
+
       }
+
     }
+
   });
 
   updateSoundButton();
@@ -1839,52 +3110,75 @@ button {
   /* CTA */
 
   function openSite() {
+
     if (!CONFIG.ctaUrl) return;
 
     window.location.assign(CONFIG.ctaUrl);
+
   }
 
   function handleFinalTap(event) {
+
     if (!isFinalScene()) return;
 
     if (event.target && event.target.closest('button')) {
+
       return;
+
     }
 
     openSite();
+
   }
 
   reveal.addEventListener('click', openSite);
+
   $('reward').addEventListener('click', openSite);
+
   game.addEventListener('click', handleFinalTap);
 
   /* ASSET DIAGNOSTICS */
 
   document.querySelectorAll('img').forEach(img => {
+
     img.addEventListener('error', () => {
+
       console.warn(
+
         '[Playable] Image failed to load:',
+
         img.getAttribute('src')
+
       );
 
       if (img.id !== 'bgImage') {
+
         img.style.visibility = 'hidden';
+
       }
+
     });
+
   });
 
   /* LIFECYCLE */
 
   document.addEventListener('visibilitychange', () => {
+
     if (document.hidden) {
+
       return;
+
     }
 
     fitGame();
+
   });
 
 })();
+
 </script>
 
 </body>
+
 </html>
