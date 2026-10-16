@@ -2004,6 +2004,8 @@ button {
 
   const finalCharacter = $('characterFinal');
 
+  finalCharacter.loop = false;
+
   const revealAura = $('revealAura');
 
   const revealParticles = $('revealParticles');
@@ -3096,7 +3098,6 @@ button {
   finalCharacter.addEventListener('ended', () => {
 
     finalCharacter.pause();
-    finalCharacter.currentTime = Math.max(0, finalCharacter.duration - 0.05);
 
   });
 
