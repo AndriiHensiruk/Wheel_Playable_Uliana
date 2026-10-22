@@ -502,6 +502,7 @@ button {
   max-height: 100%;
   object-fit: contain;
   object-position: center;
+  background: transparent;
   transform: translate(-50%, -50%) scale(.92);
   opacity: 0;
   filter: drop-shadow(0 0 20px #ff4fa3);
@@ -734,6 +735,17 @@ button {
   color: #ff4fa3;
   text-shadow: 0 0 8px #ff4fa3;
 }
+/* Приховані відео-джерела (stacked alpha), малюються на canvas */
+.alpha-src {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 2px;
+  opacity: 0.01;
+  pointer-events: none;
+  z-index: -5;
+}
 /* REVEAL SCENE */
 #game.scene-reveal #headline,
 #game.scene-reveal #topIcons {
@@ -954,35 +966,16 @@ button {
   <div id="blurOverlay"></div>
   <div id="revealAura" aria-hidden="true"></div>
   <div id="revealParticles" aria-hidden="true"></div>
-  <video
-    class="asset"
-    id="characterReveal"
-    src="assets/girl-reveal.webm"
-    muted
-    loop
-    playsinline
-    preload="auto"
-    aria-hidden="true"
-  ></video>
-  <video
-    class="asset"
-    id="characterSecond"
-    src="assets/girl-litle.webm"
-    muted
-    loop
-    playsinline
-    preload="auto"
-    aria-hidden="true"
-  ></video>
-  <video
-    class="asset"
-    id="characterFinal"
-    src="assets/girl-final.webm"
-    muted
-    playsinline
-    preload="auto"
-    aria-hidden="true"
-  ></video>
+  <!--
+    Персонажі: stacked-alpha відео (колір зверху, маска знизу) малюються на canvas.
+    Canvas має ті самі id, що й раніше, тому вся CSS-анімація працює без змін.
+  -->
+  <canvas class="asset" id="characterReveal" width="540" height="960" aria-hidden="true"></canvas>
+  <canvas class="asset" id="characterSecond" width="540" height="960" aria-hidden="true"></canvas>
+  <canvas class="asset" id="characterFinal" width="540" height="960" aria-hidden="true"></canvas>
+  <video class="alpha-src" id="vidReveal" muted loop playsinline webkit-playsinline disableremoteplayback preload="auto" aria-hidden="true"></video>
+  <video class="alpha-src" id="vidSecond" muted loop playsinline webkit-playsinline disableremoteplayback preload="auto" aria-hidden="true"></video>
+  <video class="alpha-src" id="vidFinal" muted playsinline webkit-playsinline disableremoteplayback preload="auto" aria-hidden="true"></video>
   <img
     id="caption"
     src="assets/text-1.webp"
@@ -1045,15 +1038,174 @@ button {
   const spinHint = $('spinHint');
   const girl = $('girlMystery');
   const question = $('questionMark');
-  const reveal = $('characterReveal');
-  const secondCharacter = $('characterSecond');
-  const finalCharacter = $('characterFinal');
+  const reveal = $('vidReveal');
+  const secondCharacter = $('vidSecond');
+  const finalCharacter = $('vidFinal');
   finalCharacter.loop = false;
   const revealAura = $('revealAura');
   const revealParticles = $('revealParticles');
   const caption = $('caption');
   const soundBtn = $('soundBtn');
   const soundGlyph = soundBtn.querySelector('span');
+
+  /* STACKED-ALPHA VIDEO -> canvas (WebGL)
+     Файл: H.264 mp4, зверху колір, знизу маска прозорості (сірий).
+     Не залежить від альфа-кодеків, тому однаково працює на iOS, Android і desktop. */
+  const STACKED = {
+    reveal: 'assets/girl-reveal-stacked.mp4',
+    second: 'assets/girl-litle-stacked.mp4',
+    final: 'assets/girl-final-stacked.mp4'
+  };
+  const stackedRenderers = [];
+  const hasWebGL = (() => {
+    try {
+      const probe = document.createElement('canvas');
+      return !!(probe.getContext('webgl') || probe.getContext('experimental-webgl'));
+    } catch (e) {
+      return false;
+    }
+  })();
+  
+  const VERT_SRC =
+    'attribute vec2 p; varying vec2 v;' +
+    'void main(){' +
+    '  v = vec2(p.x * 0.5 + 0.5, 0.5 - p.y * 0.5);' +
+    '  gl_Position = vec4(p, 0.0, 1.0);' +
+    '}';
+
+  const FRAG_SRC =
+    'precision mediump float;' +
+    'uniform sampler2D t;' +
+    'uniform float e;' +
+    'varying vec2 v;' +
+    'void main(){' +
+    '  float cy = clamp(v.y * 0.5, e, 0.5 - e);' +
+    '  float ay = clamp(0.5 + v.y * 0.5, 0.5 + e, 1.0 - e);' +
+    '  vec3 c = texture2D(t, vec2(v.x, cy)).rgb;' +
+    '  float a = texture2D(t, vec2(v.x, ay)).r;' +
+    '  gl_FragColor = vec4(c * a, a);' +
+    '}';
+
+  function createStackedRenderer(video, canvas) {
+    const r = { video, canvas, needsDraw: true, draw: () => {} };
+    let gl = null;
+    let eLoc = null;
+    let tmp = null;
+    let tmpCtx = null;
+    let ctx2d = null;
+
+    if (hasWebGL) {
+      const opts = { alpha: true, premultipliedAlpha: true, antialias: false, preserveDrawingBuffer: true };
+      gl = canvas.getContext('webgl', opts) || canvas.getContext('experimental-webgl', opts);
+      const compile = (type, src) => {
+        const sh = gl.createShader(type);
+        gl.shaderSource(sh, src);
+        gl.compileShader(sh);
+        return sh;
+      };
+      const program = gl.createProgram();
+      gl.attachShader(program, compile(gl.VERTEX_SHADER, VERT_SRC));
+      gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAG_SRC));
+      gl.linkProgram(program);
+      gl.useProgram(program);
+      const buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+      const pLoc = gl.getAttribLocation(program, 'p');
+      gl.enableVertexAttribArray(pLoc);
+      gl.vertexAttribPointer(pLoc, 2, gl.FLOAT, false, 0, 0);
+      eLoc = gl.getUniformLocation(program, 'e');
+      const tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.uniform1i(gl.getUniformLocation(program, 't'), 0);
+      gl.clearColor(0, 0, 0, 0);
+    } else {
+      ctx2d = canvas.getContext('2d');
+      tmp = document.createElement('canvas');
+      tmpCtx = tmp.getContext('2d', { willReadFrequently: true });
+    }
+
+    r.draw = () => {
+      const vw = video.videoWidth;
+      const vh = video.videoHeight;
+      if (!vw || !vh || video.readyState < 2) return;
+      const w = vw;
+      const h = Math.floor(vh / 2);
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+      if (gl) {
+        gl.viewport(0, 0, w, h);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+        gl.uniform1f(eLoc, 0.5 / vh);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      } else {
+        if (tmp.width !== w || tmp.height !== h * 2) {
+          tmp.width = w;
+          tmp.height = h * 2;
+        }
+        tmpCtx.drawImage(video, 0, 0, w, h * 2);
+        const color = tmpCtx.getImageData(0, 0, w, h);
+        const mask = tmpCtx.getImageData(0, h, w, h);
+        const cd = color.data;
+        const md = mask.data;
+        /* Колір у відео premultiplied (змішаний із чорним), а putImageData чекає straight */
+        for (let i = 0; i < cd.length; i += 4) {
+          const a = md[i];
+          if (a > 0) {
+            const k = 255 / a;
+            cd[i] = Math.min(255, cd[i] * k);
+            cd[i + 1] = Math.min(255, cd[i + 1] * k);
+            cd[i + 2] = Math.min(255, cd[i + 2] * k);
+          }
+          cd[i + 3] = a;
+        }
+        ctx2d.putImageData(color, 0, 0);
+      }
+    };
+
+    ['loadeddata', 'loadedmetadata', 'seeked', 'playing', 'pause', 'ended', 'timeupdate'].forEach(evt => {
+      video.addEventListener(evt, () => { r.needsDraw = true; });
+    });
+    stackedRenderers.push(r);
+    return r;
+  }
+
+  function renderStackedLoop() {
+    for (const r of stackedRenderers) {
+      if (!r.video.paused || r.needsDraw) {
+        r.needsDraw = false;
+        try {
+          r.draw();
+        } catch (error) {
+          console.warn('[Playable] Stacked render failed:', error);
+        }
+      }
+    }
+    requestAnimationFrame(renderStackedLoop);
+  }
+
+  function setupStackedVideo(video, canvasId, src) {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.src = src;
+    video.load();
+    createStackedRenderer(video, $(canvasId));
+  }
+  setupStackedVideo(reveal, 'characterReveal', STACKED.reveal);
+  setupStackedVideo(secondCharacter, 'characterSecond', STACKED.second);
+  setupStackedVideo(finalCharacter, 'characterFinal', STACKED.final);
+  requestAnimationFrame(renderStackedLoop);
+
   let fitRaf = 0;
   function fitGame() {
     const vv = window.visualViewport;
